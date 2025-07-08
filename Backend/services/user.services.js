@@ -1,4 +1,5 @@
 const userModel = require('../models/user.models');
+const blacklistTokenModel = require('../models/blacklistToken.model');
 
 module.exports.createUser = async ({
     fullname,
@@ -17,4 +18,10 @@ module.exports.createUser = async ({
         password,
     });
     return user;
+}
+
+module.exports.blacklistToken = async (token) => {
+    const blacklistToken = new blacklistTokenModel({ token });
+    await blacklistToken.save();
+    return blacklistToken;
 }
