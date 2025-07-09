@@ -21,7 +21,7 @@ module.exports.createUser = async ({
 }
 
 module.exports.blacklistToken = async (token) => {
-    const blacklistToken = new blacklistTokenModel({ token });
+    const blacklistToken = await blacklistTokenModel.create({ token });
     await blacklistToken.save();
     return blacklistToken;
 }

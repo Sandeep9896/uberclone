@@ -33,23 +33,6 @@ Registers a new user.
 }
 ```
 
-#### Validation Rules
-- `fullname.firstname`: required, minimum 3 characters
-- `fullname.lastname`: required, minimum 3 characters
-- `email`: required, must be a valid email
-- `password`: required, minimum 6 characters
-
-#### Example Request (using curl)
-```bash
-curl -X POST http://localhost:3000/api/users/register \
--H "Content-Type: application/json" \
--d '{
-  "fullname": { "firstname": "John", "lastname": "Doe" },
-  "email": "john@example.com",
-  "password": "yourpassword"
-}'
-```
-
 #### Success Response
 - **Status:** `201 Created`
 - **Body:**
@@ -68,37 +51,112 @@ curl -X POST http://localhost:3000/api/users/register \
 }
 ```
 
-#### Error Responses
-- **Status:** `400 Bad Request`
+---
+
+### 2. Login User
+
+**POST** `/login`
+
+Authenticates a user and returns a JWT token.
+
+#### Request Body (JSON)
+```json
+{
+  "email": "john@example.com",
+  "password": "yourpassword"
+}
+```
+
+#### Success Response
+- **Status:** `200 OK`
 - **Body:**
 ```json
 {
-  "errors": [
-    {
-      "msg": "First name must be at least 3 characters long",
-      "param": "fullname.firstname",
-      "location": "body"
-    }
-  ]
+  "user": {
+    "_id": "user_id_here",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@example.com",
+    "socketId": null
+  },
+  "token": "jwt_token_here"
+}
+```
+
+#### Error Response
+- **Status:** `401 Unauthorized`
+- **Body:**
+```json
+{
+  "error": "Invalid credentials"
 }
 ```
 
 ---
 
-### 2. Login (Not Implemented)
+### 3. Get User Profile
 
-**GET** `/login`
+**GET** `/profile`
 
-Returns a placeholder message.
+Returns the authenticated user's profile.  
+**Requires Authorization:**  
+Send the JWT token in the `Authorization` header as `Bearer <token>` or as a cookie if set.
+
+#### Example Request (with Bearer token)
+```
+GET /api/users/profile
+Authorization: Bearer jwt_token_here
+```
+
+#### Success Response
+- **Status:** `200 OK`
+- **Body:**
+```json
+{
+  "user": {
+    "_id": "user_id_here",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@example.com",
+    "socketId": null
+  }
+}
+```
+
+#### Error Response
+- **Status:** `401 Unauthorized`
+- **Body:**
+```json
+{
+  "error": "Not authorized"
+}
+```
+
+---
+
+### 4. Logout User
+
+**GET** `/logout`
+
+Logs out the authenticated user by blacklisting the JWT token (if implemented) and clearing the cookie.
 
 #### Example Request
 ```
-GET http://localhost:3000/api/users/login
+GET /api/users/logout
+Authorization: Bearer jwt_token_here
 ```
 
-#### Response
-```text
-Login route not implemented yet
+#### Success Response
+- **Status:** `200 OK`
+- **Body:**
+```json
+{
+  "message": "Logged out successfully"
+}
 ```
 
 ---
@@ -106,17 +164,8 @@ Login route not implemented yet
 ## Notes
 
 - All endpoints expect and return JSON.
-- Make sure your server and MongoDB are running before making requests.
 - Use the [Postman Desktop App](https://www.postman.com/downloads/) or `curl` for local testing.
-
----
-
-## Project Structure
-
-- `controller/user.controller.js` — Handles request logic
-- `routes/user.routes.js` — API route definitions
-- `models/user.models.js` — Mongoose user schema
-- `services/user.services.js` — User database operations
+- For protected routes (`/profile`, `/logout`), you must provide a valid JWT token.
 
 ---
 
@@ -129,6 +178,15 @@ MONGO_URI=mongodb://localhost:27017/uberclone
 JWT_SECRET=your_jwt_secret
 CORS_ORIGIN=http://localhost:3000
 ```
+
+---
+
+## Project Structure
+
+- `controller/user.controller.js` — Handles request logic
+- `routes/user.routes.js` — API route definitions
+- `models/user.models.js` — Mongoose user schema
+- `services/user.services.js` — User database operations
 
 ---
 
