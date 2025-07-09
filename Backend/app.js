@@ -20,6 +20,7 @@ app.use(express.urlencoded({extended: true}));
 
 const connectDB = require('./db/db');
 const userRoutes = require('./routes/user.routes');
+const captainRoutes = require('./routes/captain.routes');
 
 // Connect to the database
 connectDB();
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
     res.send('Hello World');
 });
 app.use('/api/users', userRoutes); // Changed the path to include 'api'
+app.use('/api/captains', captainRoutes); // Changed the path to include 'api'
 
 // Error handling middleware
 app.use((err, req, res, next) => {
