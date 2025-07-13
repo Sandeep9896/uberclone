@@ -1,0 +1,21 @@
+// sample data json for captin register
+{
+  "fullname": {
+    "firstname": "Ahmed",
+    "lastname": "Khan"
+  },
+  "email": "ahmed.khan@example.com",
+  "password": "securepass123",
+  "socketId": null,
+  "status": "active",
+  "vehicle": {
+    "color": "Black",
+    "plate": "ABC-1234",
+    "capacity": 4,
+    "vechileType": "car",
+    "location": {
+      "lat": 24.8607,
+      "lon": 67.0011
+    }
+  }
+}
