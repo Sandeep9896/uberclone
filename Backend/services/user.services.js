@@ -1,7 +1,7 @@
-const userModel = require('../models/user.models');
-const blacklistTokenModel = require('../models/blacklistToken.model');
+import userModel from '../models/user.models.js';
+import blacklistTokenModel from '../models/blacklistToken.model.js';
 
-module.exports.createUser = async ({
+export const createUser = async ({
     fullname,
     email,
     password,
@@ -9,7 +9,7 @@ module.exports.createUser = async ({
     if (!fullname || !email || !password) {
         throw new Error('All fields are required');
     }
-    const user = await userModel.create({ // <-- add await here
+    const user = await userModel.create({
         fullname: {
             firstname: fullname.firstname,
             lastname: fullname.lastname
@@ -18,10 +18,10 @@ module.exports.createUser = async ({
         password,
     });
     return user;
-}
+};
 
-module.exports.blacklistToken = async (token) => {
+export const blacklistToken = async (token) => {
     const blacklistToken = await blacklistTokenModel.create({ token });
     await blacklistToken.save();
     return blacklistToken;
-}
+};

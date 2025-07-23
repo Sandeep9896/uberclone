@@ -1,10 +1,10 @@
-const captainModel = require('../models/captain.model');
-const { validationResult } = require('express-validator');
-const blacklistTokenModel = require('../models/blacklistToken.model');
-const captainService = require('../services/captain.services');
+import captainModel from '../models/captain.model.js';
+import { validationResult } from 'express-validator';
+import blacklistTokenModel from '../models/blacklistToken.model.js';
+import {createCaptain} from '../services/captain.services.js';
 
 
-module.exports.registerCaptain = async (req, res) => {
+export const registerCaptain = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -21,7 +21,7 @@ module.exports.registerCaptain = async (req, res) => {
         
         const hashedPassword = await captainModel.hashPassword(password);
         // Create a new captain
-        const captain = await captainService.createCaptain({
+        const captain = await createCaptain({
             fullname,
             email,
             password: hashedPassword,
@@ -42,7 +42,7 @@ module.exports.registerCaptain = async (req, res) => {
     }
 }
 
-module.exports.loginCaptain = async (req, res) => {
+export const loginCaptain = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -82,7 +82,7 @@ module.exports.loginCaptain = async (req, res) => {
         });
     }
 }
-module.exports.getCaptainProfile = async (req, res) => {
+export const getCaptainProfile = async (req, res) => {
     try {
         const captain = req.captain; // Assuming the captain is set in the middleware
         res.status(200).json({
@@ -98,7 +98,7 @@ module.exports.getCaptainProfile = async (req, res) => {
         });
     }
 }
-module.exports.logoutCaptain = async (req, res) => {
+export const logoutCaptain = async (req, res) => {
      const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
          if (!token) {
               return res.status(401).json({ message: "Unauthorized access" });

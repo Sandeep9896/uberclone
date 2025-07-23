@@ -1,14 +1,13 @@
-const userModel = require('../models/user.models');
-const blacklistTokenModel = require('../models/blacklistToken.model');
-const userService = require('../services/user.services');
-const { validationResult } = require('express-validator');
+import userModel from '../models/user.models.js';
+import blacklistTokenModel from '../models/blacklistToken.model.js';
+import { createUser } from '../services/user.services.js';
+import { validationResult } from 'express-validator';
 
 
 
 
 
-
-module.exports.registerUser = async (req, res, next) => {
+export const registerUser = async (req, res, next) => {
 
      console.log('Register request body:', req.body);
      const errors = validationResult(req);
@@ -25,7 +24,7 @@ module.exports.registerUser = async (req, res, next) => {
 
      const hashedPassword = await userModel.hashPassword(password);
 
-     const user = await userService.createUser({
+     const user = await createUser({
           fullname,
           email,
           password: hashedPassword
@@ -36,7 +35,7 @@ module.exports.registerUser = async (req, res, next) => {
 
 }
 
-module.exports.loginUser = async (req, res, next) => {
+export const loginUser = async (req, res, next) => {
 
      console.log('Login request body:', req.body);
      const errors = validationResult(req);
@@ -66,14 +65,14 @@ module.exports.loginUser = async (req, res, next) => {
 
 }
 
-module.exports.getUserProfile = async (req, res, next) => {
+export const getUserProfile = async (req, res, next) => {
      return res.status(200).json({
           user: req.user,
           message: 'User profile retrieved successfully'
      });
 
 }
-module.exports.logoutUser = async (req, res, next) => {
+export const logoutUser = async (req, res, next) => {
      const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
      if (!token) {
           return res.status(401).json({ message: "Unauthorized access" });

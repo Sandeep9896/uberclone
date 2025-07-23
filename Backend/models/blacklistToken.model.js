@@ -1,6 +1,6 @@
-const mongoose=require('mongoose');
+import mongoose from 'mongoose';
 
-const blacklistTokenSchema=new mongoose.Schema({
+const blacklistTokenSchema = new mongoose.Schema({
     token: {
         type: String,
         required: true,
@@ -12,5 +12,5 @@ const blacklistTokenSchema=new mongoose.Schema({
         expires: '1d' // Token will expire after 1 day
     }
 });
-    const blacklistTokenmodel=mongoose.model('BlacklistToken', blacklistTokenSchema);
-    module.exports=blacklistTokenmodel;
+const blacklistTokenmodel = mongoose.model('BlacklistToken', blacklistTokenSchema);
+export default blacklistTokenmodel;

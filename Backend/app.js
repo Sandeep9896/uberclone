@@ -1,26 +1,24 @@
-const express = require('express');
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import connectDB from './db/db.js';
+import userRoutes from './routes/user.routes.js';
+import captainRoutes from './routes/captain.routes.js';
+import mapRoutes from './routes/map.routes.js';
+
 const app = express();
-const dotenv = require('dotenv');
-dotenv.config();
-const cors = require('cors');
-const cookies = require('cookie-parser');
-
-app.use(cookies()); // Use cookie-parser middleware to parse cookies
-
-// Middleware
-app.use(cors(
-    {
-        origin: process.env.CORS_ORIGIN || 'http://localhost:3000', // Default to localhost if not set
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        credentials: true // Allow credentials if needed
-    }
-));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+dotenv.config();
+app.use(cookieParser());
 
-const connectDB = require('./db/db');
-const userRoutes = require('./routes/user.routes');
-const captainRoutes = require('./routes/captain.routes');
+app.use(cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+
+app.use(express.urlencoded({ extended: true }));
 
 // Connect to the database
 connectDB();
@@ -29,8 +27,9 @@ connectDB();
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
-app.use('/api/users', userRoutes); // Changed the path to include 'api'
-app.use('/api/captains', captainRoutes); // Changed the path to include 'api'
+app.use('/api/users', userRoutes);
+app.use('/api/captains', captainRoutes);
+app.use('/api/maps', mapRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -41,5 +40,5 @@ app.use((err, req, res, next) => {
     });
 });
 
-module.exports = app;
+export default app;
 // This is the main application file for the Express.js server.
