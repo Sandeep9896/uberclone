@@ -6,6 +6,7 @@ import connectDB from './db/db.js';
 import userRoutes from './routes/user.routes.js';
 import captainRoutes from './routes/captain.routes.js';
 import mapRoutes from './routes/map.routes.js';
+import rideRoutes from './routes/ride.route.js';
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/captains', captainRoutes);
 app.use('/api/maps', mapRoutes);
+app.use('/api/rides', rideRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
