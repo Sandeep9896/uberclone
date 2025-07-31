@@ -18,35 +18,21 @@ const LookingForDiver = (props) => {
                     <div className='flex items-center gap-5 p-3 border-b-2 border-gray-200'>
                         <i className="ri-map-pin-2-fill"></i>
                         <div>
-<<<<<<< HEAD
                           <p className='text-sm -mt-1'>Pickup Location</p>
                           <h4  className='text-lg font-medium'>{props.ride?.pickupLocation}</h4>
-=======
-                            <h3 className='text-lg font-medium'>562/33-A</h3>
-                            <p className='text-sm -mt-1'>jmit,radur</p>
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
                         </div>
                     </div>
                     <div className='flex items-center gap-5 p-3 border-b-2 border-gray-200'>
                         <i className="ri-map-pin-user-fill"></i>
                         <div>
-<<<<<<< HEAD
                             <p className='text-sm -mt-1'>Drop Location</p>
                             <h4 className='text-lg font-medium'>{props.ride?.dropLocation}</h4>
-=======
-                            <h3 className='text-lg font-medium'>562/33-A</h3>
-                            <p className='text-sm -mt-1'>jmit,radur</p>
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
                         </div>
                     </div>
                     <div className='flex items-center gap-5 p-3 '>
                         <i className="ri-currency-line"></i>
                         <div>
-<<<<<<< HEAD
                             <h3 className='text-lg font-medium'>{props.ride?.fare}</h3>
-=======
-                            <h3 className='text-lg font-medium'>177</h3>
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
                             <p className='text-sm -mt-1'>cash cash</p>
                         </div>
                     </div>

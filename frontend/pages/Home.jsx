@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 import React, { useRef, useState, useCallback } from 'react'
 import axios from 'axios';
-=======
-import React, { useRef } from 'react'
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap';
 import 'remixicon/fonts/remixicon.css'
@@ -13,7 +9,6 @@ import ConfirmRide from '../components/ConfirmRide';
 import LookingForDiver from '../components/LookingForDiver';
 import WaitingForDriver from '../components/WaitingForDriver';
 
-<<<<<<< HEAD
 // Debounce utility
 function debounce(fn, delay) {
   let timer;
@@ -102,6 +97,7 @@ const home = () => {
       setFareDetails(response.data);
     } catch (err) {
       setError('Error fetching fare details. Please try again later.');
+      throw new Error(err);
     }
   };
 
@@ -126,16 +122,6 @@ const home = () => {
       console.error("Error creating ride:", error);
     }
   };
-=======
-const home = () => {
-  const [pickup, setPickup] = React.useState("");
-  const [destination, setDestination] = React.useState("");
-  const [panelOpen, setPanelOpen] = React.useState(false);
-  const [vechilePanel, setVechilePanel] = React.useState(false);
-  const [confirmRidePanel, setConfirmRidePanel] = React.useState(false);
-  const [vechileFound, setVechileFound] = React.useState(false);
-  const [waitingPanel, setWaitingPanel] = React.useState(false);
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 
   const waitingPanelRef = useRef(null);
   const vechileFoundRef = useRef(null);
@@ -143,12 +129,9 @@ const home = () => {
   const vechilePanelRef = useRef(null);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
   const submitHandler = (e) => {
     e.preventDefault();
   }
@@ -251,7 +234,6 @@ const home = () => {
 
           } >
             <div className="line h-20 w-1 top-[43%] left-10  absolute bg-gray-700 rounded-full  "></div>
-<<<<<<< HEAD
             <input
               type="text"
               value={pickup}
@@ -278,13 +260,12 @@ const home = () => {
             />
             {pickup && destination && panelOpen ?
               <button
-                onClick={() => {
-                  fetchFare();
-                  if (fareDetails) {
+                onClick={async () => {
+                    try {
+                    fetchFare();
                     setVechilePanel(true);
                     setPanelOpen(false);
-                  }
-                  else{
+                    } catch {
                     alert("Route does not exist or is not available")
                     setDestination("");
                     setPickup("");
@@ -297,33 +278,10 @@ const home = () => {
               </button>
               : null}
 
-=======
-            <input type="text"
-              value={pickup}
-              onChange={(e) => setPickup(e.target.value)}
-              required
-              onClick={() => {
-                setPanelOpen(true);
-              }
-              }
-              placeholder='Enter your pickup location'
-              className='bg-[#eee] text-base w-full rounded-lg py-2 px-12 mt-5' />
-            <input
-              type="text"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-              onClick={() => {
-                setPanelOpen(true);
-              }}
-              required
-              placeholder='Enter your destination'
-              className='bg-[#eee] text-base w-full  rounded-lg py-2 px-12 mt-5' />
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
           </form>
         </div>
         <div ref={panelRef} className=' bg-white '>
 
-<<<<<<< HEAD
           {panelOpen &&
             <LocationSearchPanel
               setPanelOpen={setPanelOpen}
@@ -341,14 +299,10 @@ const home = () => {
             />
           }
 
-=======
-          <LocationSearchPanel setPanelOpen={setPanelOpen} setVechilePanel={setVechilePanel} />
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 
         </div>
       </div>
       <div ref={vechilePanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
-<<<<<<< HEAD
         <VechilePanel
           setConfirmRidePanel={setConfirmRidePanel}
           setVechilePanel={setVechilePanel}
@@ -376,15 +330,6 @@ const home = () => {
           setVechileFound={setVechileFound}
           setWaitingPanel={setWaitingPanel}
         />
-=======
-        <VechilePanel setConfirmRidePanel={setConfirmRidePanel} setVechilePanel={setVechilePanel} />
-      </div>
-      <div ref={confirmRidePanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
-        <ConfirmRide setConfirmRidePanel={setConfirmRidePanel} setVechileFound={setVechileFound} />
-      </div>
-      <div ref={vechileFoundRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
-        <LookingForDiver setConfirmRidePanel={setConfirmRidePanel} setVechilePanel={setVechilePanel} setVechileFound={setVechileFound} setWaitingPanel={setWaitingPanel} />
->>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
       </div>
       <div ref={waitingPanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
         <WaitingForDriver setWaitingPanel={setWaitingPanel} />
