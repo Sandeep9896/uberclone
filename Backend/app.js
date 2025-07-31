@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -20,6 +21,31 @@ app.use(cors({
 }));
 
 app.use(express.urlencoded({ extended: true }));
+=======
+const express = require('express');
+const app = express();
+const dotenv = require('dotenv');
+dotenv.config();
+const cors = require('cors');
+const cookies = require('cookie-parser');
+
+app.use(cookies()); // Use cookie-parser middleware to parse cookies
+
+// Middleware
+app.use(cors(
+    {
+        origin: process.env.CORS_ORIGIN || 'http://localhost:3000', // Default to localhost if not set
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true // Allow credentials if needed
+    }
+));
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+const connectDB = require('./db/db');
+const userRoutes = require('./routes/user.routes');
+const captainRoutes = require('./routes/captain.routes');
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 
 // Connect to the database
 connectDB();
@@ -28,10 +54,15 @@ connectDB();
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
+<<<<<<< HEAD
 app.use('/api/users', userRoutes);
 app.use('/api/captains', captainRoutes);
 app.use('/api/maps', mapRoutes);
 app.use('/api/rides', rideRoutes);
+=======
+app.use('/api/users', userRoutes); // Changed the path to include 'api'
+app.use('/api/captains', captainRoutes); // Changed the path to include 'api'
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -42,5 +73,9 @@ app.use((err, req, res, next) => {
     });
 });
 
+<<<<<<< HEAD
 export default app;
+=======
+module.exports = app;
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 // This is the main application file for the Express.js server.

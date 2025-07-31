@@ -11,8 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "@mapbox/mapbox-sdk": "^0.16.1",
     "axios": "^1.10.0",
+=======
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

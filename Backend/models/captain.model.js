@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+=======
+const mongoose=require('mongoose');
+const bcrypt =require('bcrypt');
+const jwt = require('jsonwebtoken');
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
 
 const captainSchema = new mongoose.Schema({
     fullname: {
@@ -85,4 +91,8 @@ captainSchema.statics.hashPassword = async function (password) {
 }
 
 const captainModel = mongoose.model('captain', captainSchema);
+<<<<<<< HEAD
 export default captainModel;
+=======
+module.exports = captainModel;
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b

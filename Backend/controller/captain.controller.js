@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import captainModel from '../models/captain.model.js';
 import { validationResult } from 'express-validator';
 import blacklistTokenModel from '../models/blacklistToken.model.js';
@@ -5,6 +6,15 @@ import {createCaptain} from '../services/captain.services.js';
 
 
 export const registerCaptain = async (req, res) => {
+=======
+const captainModel = require('../models/captain.model');
+const { validationResult } = require('express-validator');
+const blacklistTokenModel = require('../models/blacklistToken.model');
+const captainService = require('../services/captain.services');
+
+
+module.exports.registerCaptain = async (req, res) => {
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -21,7 +31,11 @@ export const registerCaptain = async (req, res) => {
         
         const hashedPassword = await captainModel.hashPassword(password);
         // Create a new captain
+<<<<<<< HEAD
         const captain = await createCaptain({
+=======
+        const captain = await captainService.createCaptain({
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
             fullname,
             email,
             password: hashedPassword,
@@ -42,7 +56,11 @@ export const registerCaptain = async (req, res) => {
     }
 }
 
+<<<<<<< HEAD
 export const loginCaptain = async (req, res) => {
+=======
+module.exports.loginCaptain = async (req, res) => {
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -82,7 +100,11 @@ export const loginCaptain = async (req, res) => {
         });
     }
 }
+<<<<<<< HEAD
 export const getCaptainProfile = async (req, res) => {
+=======
+module.exports.getCaptainProfile = async (req, res) => {
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
     try {
         const captain = req.captain; // Assuming the captain is set in the middleware
         res.status(200).json({
@@ -98,7 +120,11 @@ export const getCaptainProfile = async (req, res) => {
         });
     }
 }
+<<<<<<< HEAD
 export const logoutCaptain = async (req, res) => {
+=======
+module.exports.logoutCaptain = async (req, res) => {
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
      const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
          if (!token) {
               return res.status(401).json({ message: "Unauthorized access" });

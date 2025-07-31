@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import CaptainDetail from '../components/CaptainDetail';
 import RidePopUp from '../components/RidePopUp';
+<<<<<<< HEAD
 import ConfirmRidePopUp from '../components/ConfirmRidePanel';
 import gsap from 'gsap';
 import{ useGSAP } from '@gsap/react';
@@ -33,6 +34,10 @@ const CaptainHome = () => {
       });
     }
   },[confirmRidePopupPanel]);
+=======
+
+const CaptainHome = () => {
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
   return (
     <div>
       <div className='h-screen w-full'>
@@ -48,11 +53,16 @@ const CaptainHome = () => {
         <div className='h-2/5 p-5'>
           <CaptainDetail />
         </div>
+<<<<<<< HEAD
         <div ref={ridePopPanelRef} className='fixed z-10 bottom-0  bg-white w-full px-3 py-6 pt-12'>
           <RidePopUp setRidePopupPanel={setRidePopupPanel}  setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
         </div>
         <div ref={confirmRidePopupRef} className='fixed z-10 h-screen bottom-0 justify-between bg-white w-full px-3 py-6 pt-12'>
           <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel}/>
+=======
+        <div className='fixed z-10 bottom-0  bg-white w-full px-3 py-6 pt-12'>
+          <RidePopUp/>
+>>>>>>> 45f6ed8015be2c9e3625d45edec2e9519015f56b
         </div>
 
       </div>
