@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { memo } from 'react';
 const ConfirmRide = (props) => {
     console.log("Fare props:", props.fare?.fare?.car);
     console.log("Vehicle type:", props);
@@ -48,10 +48,10 @@ const ConfirmRide = (props) => {
                         props.setVechileFound(true);
                         props.createRide();
                     }
-                } className='w-full mt-5 bg-green-600 rounded-lg p-2'>Continue</button>
+                } className='w-full mt-5 bg-green-600 rounded-lg p-2'>Confirm Ride</button>
             </div>
         </>
     )
 }
 
-export default ConfirmRide
+export default memo(ConfirmRide);

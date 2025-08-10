@@ -40,7 +40,7 @@ const LookingForDiver = (props) => {
                 </div>
 
             </div>
-             <button 
+             {/* <button 
              className='w-full mt-5 bg-green-600 rounded-lg p-2'
               onClick={
                 () => {
@@ -48,7 +48,7 @@ const LookingForDiver = (props) => {
                     props.setVechileFound(false);
                     props.setWaitingPanel(true);
                 }
-             }> continue</button>
+             }> continue</button> */}
             </div>
     )
 }

@@ -6,16 +6,182 @@ This backend provides user and captain registration, authentication, and profile
 
 ## Base URL
 
-```
 http://localhost:3000/api
 ```
-*(Replace `3000` with your server port if different)*
+
+[## Ride Endpoints]
+
+### 1. Create Ride
+
+**POST** `/rides/create-ride`
+
+Creates a new ride request. Requires user authentication.
+
+#### Headers
+```
+Authorization: Bearer jwt_token_here
+```
+
+#### Request Body
+```json
+{
+  "pickupLocation": "Gulshan-e-Iqbal, Karachi",
+  "dropLocation": "Saddar, Karachi",
+  "vehicleType": "car"
+}
+```
+
+#### Success Response
+```json
+{
+  "success": true,
+  "ride": {
+    "_id": "ride_id_here",
+    "pickupLocation": "Gulshan-e-Iqbal, Karachi",
+    "dropLocation": "Saddar, Karachi",
+    "userId": "user_id_here",
+    "vehicleType": "car",
+    "fare": 350,
+    "status": "pending",
+    "otp": 123456,
+    "createdAt": "2024-06-01T12:00:00.000Z"
+  }
+}
+```
+
+#### Error Response
+```json
+{
+  "errors": [
+    { "msg": "Pickup location is required", "param": "pickupLocation", "location": "body" }
+  ]
+}
 
 ---
 
-## User Endpoints
+### 2. Get Fare Estimates
 
-### 1. Register User
+**GET** `/rides/get-fares`
+
+Returns fare estimate for a ride. Requires user authentication.
+
+#### Headers
+```
+Authorization: Bearer jwt_token_here
+```
+
+#### Query Parameters
+```
+pickupLocation=Gulshan-e-Iqbal, Karachi
+dropLocation=Saddar, Karachi
+```
+
+#### Success Response
+```json
+{
+  "fare": 350
+}
+```
+
+#### Error Response
+```json
+{
+  "errors": [
+    { "msg": "Pickup location is required", "param": "pickupLocation", "location": "query" }
+  ]
+}
+
+---
+
+[## Map Endpoints]
+
+### 1. Get Coordinates for Address
+
+**GET** `/map/get-coordinates`
+
+Returns latitude and longitude for a given address. Requires user authentication.
+
+#### Headers
+```
+Authorization: Bearer jwt_token_here
+```
+
+#### Query Parameters
+```
+address=Gulshan-e-Iqbal, Karachi
+```
+
+#### Success Response
+```json
+{
+  "success": true,
+  "coordinates": {
+    "lat": 24.926294,
+    "lon": 67.082329
+  }
+}
+```
+
+---
+
+### 2. Get Distance and Time
+
+**GET** `/map/get-distance-time`
+
+Returns distance and estimated time between two locations. Requires user authentication.
+
+#### Headers
+```
+Authorization: Bearer jwt_token_here
+```
+
+#### Query Parameters
+```
+origin=Gulshan-e-Iqbal, Karachi
+destination=Saddar, Karachi
+```
+
+#### Success Response
+```json
+{
+  "success": true,
+  "distanceAndTime": {
+    "distance": 12000,
+    "duration": 1800
+  }
+}
+```
+
+---
+
+### 3. Get Location Suggestions
+
+**GET** `/map/get-suggestions`
+
+Returns location suggestions for autocomplete. Requires user authentication.
+
+#### Headers
+```
+Authorization: Bearer jwt_token_here
+```
+
+#### Query Parameters
+```
+input=Gulshan
+```
+
+#### Success Response
+```json
+{
+  "success": true,
+  "suggestions": [
+    "Gulshan-e-Iqbal, Karachi",
+    "Gulshan-e-Maymar, Karachi"
+  ]
+}
+```
+
+---
 
 **POST** `/users/register`
 

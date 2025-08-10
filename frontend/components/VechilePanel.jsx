@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, memo } from 'react';
 
 const VechilePanel = (props) => {
     const [fareDetails, setFareDetails] = useState(props.fare || null);
@@ -71,4 +71,4 @@ const VechilePanel = (props) => {
     );
 };
 
-export default VechilePanel;
+export default memo(VechilePanel);

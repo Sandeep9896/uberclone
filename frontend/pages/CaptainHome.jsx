@@ -1,16 +1,26 @@
-import React from 'react'
+import React,{useContext,useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import CaptainDetail from '../components/CaptainDetail';
 import RidePopUp from '../components/RidePopUp';
 import ConfirmRidePopUp from '../components/ConfirmRidePanel';
 import gsap from 'gsap';
 import{ useGSAP } from '@gsap/react';
+import { captaindataContext } from '../context/CaptainContext';
+
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = React.useState(true);
   const ridePopPanelRef = React.useRef(null);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = React.useState(false);
   const confirmRidePopupRef = React.useRef(null);
+
+  const { captain } = useContext(captaindataContext);
+  console.log(captain);
+
+  if (!captain) {
+    return <div className='h-screen w-full flex justify-center items-center text-2xl font-bold'>Loading...</div>;
+  }
+
   useGSAP(() => {
     if (ridePopupPanel) {
       gsap.to(ridePopPanelRef.current, {
@@ -46,7 +56,7 @@ const CaptainHome = () => {
           <img className='h-full w-full object-cover' src="images/map.png" alt="" />
         </div>
         <div className='h-2/5 p-5'>
-          <CaptainDetail />
+          <CaptainDetail captain={captain} />
         </div>
         <div ref={ridePopPanelRef} className='fixed z-10 bottom-0  bg-white w-full px-3 py-6 pt-12'>
           <RidePopUp setRidePopupPanel={setRidePopupPanel}  setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
