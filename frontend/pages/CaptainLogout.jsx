@@ -35,7 +35,7 @@ const CaptainLogout = () => {
             }
         }
         logout();
-    }, [setCaptain]);   
+    }, [setCaptain]);
     if (loggedOut) {
         return <Navigate to="/captain-login" replace />;
 

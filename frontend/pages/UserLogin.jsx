@@ -1,15 +1,23 @@
 import React from 'react'
-import { Link,useNavigate } from 'react-router-dom'
-import { useState,useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
+import { useState, useContext,useEffect } from 'react';
 import { userdataContext } from '../context/Usercontext';
 import axios from 'axios';
 
 const UserLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
+
     const { setUser } = useContext(userdataContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // If token exists, redirect to user home
+            navigate('/home');
+        }
+    }, []);
 
     const submitHandler = async (e) => {
         e.preventDefault();

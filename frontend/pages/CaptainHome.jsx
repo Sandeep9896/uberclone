@@ -5,21 +5,15 @@ import RidePopUp from '../components/RidePopUp';
 import ConfirmRidePopUp from '../components/ConfirmRidePanel';
 import gsap from 'gsap';
 import{ useGSAP } from '@gsap/react';
-import { captaindataContext } from '../context/CaptainContext';
+
 
 
 const CaptainHome = () => {
-  const [ridePopupPanel, setRidePopupPanel] = React.useState(true);
+  const [ridePopupPanel, setRidePopupPanel] = React.useState(false);
   const ridePopPanelRef = React.useRef(null);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = React.useState(false);
   const confirmRidePopupRef = React.useRef(null);
 
-  const { captain } = useContext(captaindataContext);
-  console.log(captain);
-
-  if (!captain) {
-    return <div className='h-screen w-full flex justify-center items-center text-2xl font-bold'>Loading...</div>;
-  }
 
   useGSAP(() => {
     if (ridePopupPanel) {
@@ -56,12 +50,12 @@ const CaptainHome = () => {
           <img className='h-full w-full object-cover' src="images/map.png" alt="" />
         </div>
         <div className='h-2/5 p-5'>
-          <CaptainDetail captain={captain} />
+          <CaptainDetail />
         </div>
-        <div ref={ridePopPanelRef} className='fixed z-10 bottom-0  bg-white w-full px-3 py-6 pt-12'>
+        <div ref={ridePopPanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
           <RidePopUp setRidePopupPanel={setRidePopupPanel}  setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
         </div>
-        <div ref={confirmRidePopupRef} className='fixed z-10 h-screen bottom-0 justify-between bg-white w-full px-3 py-6 pt-12'>
+        <div ref={confirmRidePopupRef} className='fixed z-10 h-screen bottom-0 translate-y-full justify-between bg-white w-full px-3 py-6 pt-12'>
           <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel}/>
         </div>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { captaindataContext } from '../context/CaptainContext.jsx';
@@ -11,6 +11,14 @@ const CaptainLogin = () => {
     const [password, setPassword] = useState('');
     const { setCaptain } = useContext(captaindataContext); // Correct usage
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // If token exists, redirect to captain home
+            navigate('/captain-home');
+        }
+    }, []);
 
     const submitHandler = async (e, email, password) => {
         e.preventDefault();

@@ -10,8 +10,8 @@ export const CaptainProvider = ({children}) => {
     const [captain, setCaptain] = useState(null);
     const{isLoading, setIsLoading} = useState(false);
     const {error, setError} = useState(null);
-    const updateCaptain=(CaptainData) => {
-        setCaptainData(CaptainData);
+    const updateCaptain=(captainData) => {
+        setCaptain(captainData);
     }
     const value={
         captain,

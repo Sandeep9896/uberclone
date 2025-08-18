@@ -36,7 +36,8 @@ const UserProtectwrapper = ({ children }) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (error || !user) {
+  if (error || !token || !user) {
+    localStorage.removeItem('token'); // Clear token if error occurs
     return <Navigate to="/login" replace />;
   }
 
