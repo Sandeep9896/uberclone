@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, useContext,useEffect } from 'react';
 import { userdataContext } from '../context/Usercontext';
+import { SocketContext } from '../context/SocketContext';
 import axios from 'axios';
 
 const UserLogin = () => {
@@ -9,6 +10,7 @@ const UserLogin = () => {
     const [password, setPassword] = useState('');
 
     const { setUser } = useContext(userdataContext);
+    const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,6 +36,7 @@ const UserLogin = () => {
             );
             if (response.status === 200) {
                 setUser(response.data.user); // set user from backend response
+                setIsLoggedIn(true); // Set login state to true
                 localStorage.setItem('token', response.data.token); // store token in local storage
                 navigate('/home');
             }

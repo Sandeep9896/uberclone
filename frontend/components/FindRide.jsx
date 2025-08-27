@@ -2,7 +2,7 @@ import React from 'react'
 
 const FindRide = ({ panelCloseRef,panelOpen, setPanelOpen, pickup, destination, pickupHandler, destinationHandler, findRide, setActiveInput, setPickupSuggestions, setDestinationSuggestions }) => {
   return (
-     <div className=' h-[30%] bg-white p-5 relative '>
+     <div className=' h-[35%] bg-white p-5 relative '>
             <h5
               ref={panelCloseRef}
               onClick={() => {

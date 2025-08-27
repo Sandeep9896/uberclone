@@ -1,4 +1,5 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useState, useCallback, useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap';
@@ -9,6 +10,9 @@ import ConfirmRide from '../components/ConfirmRide';
 import LookingForDiver from '../components/LookingForDiver';
 import WaitingForDriver from '../components/WaitingForDriver';
 import FindRide from '../components/FindRide';
+import { SocketContext } from '../context/SocketContext';
+import { userdataContext } from '../context/Usercontext';
+
 
 // Debounce utility
 function debounce(fn, delay) {
@@ -20,6 +24,7 @@ function debounce(fn, delay) {
 }
 
 const home = () => {
+
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
@@ -36,7 +41,30 @@ const home = () => {
   const [error, setError] = useState(null);
   const [vehicleImage, setVehicleImage] = useState(null);
   const [isFareLoading, setIsFareLoading] = useState(false);
-  console.log("Vehicle Type:", vehicleType);
+  const { socket, sendMessage, receiveMessage } = useContext(SocketContext);
+  const { user } = useContext(userdataContext);
+
+  useEffect(() => {
+    if (socket && socket.connected && user) {
+      sendMessage('join', { userType: 'user', userId: user._id });
+    }
+  }, [socket, user]);
+
+  useEffect(() => {
+    const unsubscribe = receiveMessage('confirm-ride', (data) => {
+      console.log('Ride confirmed:', data);
+      setVechileFound(false);
+      setWaitingPanel(true);
+      setRideDetails(data);
+
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [receiveMessage]);
+
+
 
   // Debounced handlers
   const debouncedPickupHandler = useCallback(
@@ -161,9 +189,10 @@ const home = () => {
     if (panelOpen) {
       gsap.to(panelRef.current,
         {
-          height: "70%",
+          height: "65%",
           padding: "24px 0",
-          display: "block"
+          display: "block",
+          zIndex: 10,
 
         });
       gsap.to(panelCloseRef.current, { opacity: 1 });
@@ -232,15 +261,26 @@ const home = () => {
     }
   }, [waitingPanel]);
   // Example where useMemo would help:
+  const findRideParentRef = useRef(null);
+  if(panelOpen){
+    findRideParentRef.current.style.zIndex = "10";
+  }
 
   return (
     <div className='flex flex-col h-screen relative overflow-hidden'>
-      <img className=' w-16 absolute left-5 top-5 ' src="images\uber.png" alt="" />
-      <div className='h-screen w-screen '>
+      <div className='flex items-center flex-row justify-between z-2'>
+        <img className=' w-16 absolute left-5 top-5 ' src="images\uber.png" alt="" />
+        <Link onClick={() => console.log("Logging out...")} to="/users/logout" className='h-12 w-12 p-3 absolute right-2 top-5 bg-white flex items-center justify-center rounded-full shadow-lg'>
+          <i className="text-lg font-medium ri-logout-box-r-line"></i>
+        </Link>
+      </div>
+      <div className='h-screen w-screen  '>
         {/* image for temprary use */}
         <img className='h-full w-full object-cover' src="images/map.png" alt="" />
       </div>
-      <div className=' h-screen flex flex-col  justify-end absolute top-0 w-full '>
+     
+
+      <div ref={findRideParentRef} className=' h-screen flex flex-col  justify-end absolute top-0 w-full  '>
         <FindRide
           setPanelOpen={setPanelOpen}
           pickup={pickup}
@@ -254,7 +294,7 @@ const home = () => {
           panelOpen={panelOpen}
           panelCloseRef={panelCloseRef}
         />
-        <div ref={panelRef} className=' bg-white '>
+        <div ref={panelRef} className=' bg-white  '>
 
           {panelOpen &&
             <LocationSearchPanel
@@ -307,7 +347,7 @@ const home = () => {
         />
       </div>
       <div ref={waitingPanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
-        <WaitingForDriver setWaitingPanel={setWaitingPanel} />
+        <WaitingForDriver setWaitingPanel={setWaitingPanel} ride={rideDetails} />
       </div>
 
     </div>

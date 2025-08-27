@@ -4,10 +4,12 @@ import { captaindataContext } from '../context/CaptainContext';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { SocketContext } from '../context/SocketContext';
 
 const CaptainLogout = () => {
     const [loggedOut, setLoggedOut] = useState(false);
     const { captain, setCaptain } = useContext(captaindataContext);
+    const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -26,6 +28,7 @@ const CaptainLogout = () => {
                             localStorage.removeItem('token');
                             setCaptain(null);
                             setLoggedOut(true);
+                            setIsLoggedIn(false); // Set login state to false
                         }
                     })
                 }

@@ -1,8 +1,6 @@
 import React from 'react'
 import { memo } from 'react';
 const ConfirmRide = (props) => {
-    console.log("Fare props:", props.fare?.fare?.car);
-    console.log("Vehicle type:", props);
     return (
         <>
             <h5

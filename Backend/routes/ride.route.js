@@ -18,4 +18,14 @@ router.get('/get-fares',
     query('dropLocation').notEmpty().withMessage('Drop location is required'),
 ], rideController.getFares);
 
+router.post('/confirm',
+    authMiddleware.authCaptain,
+    body('rideId').notEmpty().withMessage('Ride ID is required'),
+    body('captainId').notEmpty().withMessage('Captain ID is required'),
+    rideController.confirmRide);
+
+router.get('/available-rides',
+    authMiddleware.authCaptain,
+    rideController.getAvailableRides);
+
 export default router;

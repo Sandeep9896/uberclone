@@ -75,15 +75,17 @@ const captainSchema = new mongoose.Schema({
         type: Number,
         default: 0, // Default hours online to 0
     },
-    rating: {
-        type: Number,
-        default: 0, // Default rating to 0
+   location: {
+        type: { type: String, enum: ['Point'],  },
+        coordinates: { type: [Number] }, // [longitude, latitude]
     },
     distanceCovered: {
         type: Number,
         default: 0, // Default distance covered to 0
     }
 });
+ 
+captainSchema.index({ location: '2dsphere' }); 
 
 captainSchema.methods.generateAuthToken = async function () {
     const captain = this;

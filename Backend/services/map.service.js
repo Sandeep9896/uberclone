@@ -1,5 +1,8 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import captainModel from '../models/captain.model.js';
+
+// Load environment variables
 
 dotenv.config();
 
@@ -35,6 +38,8 @@ export const getDistanceAndTimeService = async (origin, destination) => {
         // First check if we received strings (addresses) or coordinates
         let originCoords, destCoords;
 
+
+
         // If we received addresses, convert them to coordinates
         if (typeof origin === 'string') {
             originCoords = await getCoordinatesService(origin);
@@ -47,14 +52,13 @@ export const getDistanceAndTimeService = async (origin, destination) => {
         } else {
             destCoords = destination; // Already coordinates object
         }
-
         // Format coordinates properly for the API (longitude,latitude)
         const originStr = `${originCoords.lng},${originCoords.lat}`;
         const destStr = `${destCoords.lng},${destCoords.lat}`;
-        
+
         // Build the correct URL with coordinates in longitude,latitude format
         const url = `${DIRECTIONS_BASE_URL}/${originStr};${destStr}`;
-        
+
         console.log('Debug - Request URL:', url);
 
         const response = await axios.get(url, {
@@ -92,7 +96,7 @@ export const getSuggestionsService = async (query) => {
             params: {
                 access_token: API_KEY,
                 limit: 20, // Limit to 5 suggestions
-                 
+
             }
         });
 
@@ -104,10 +108,37 @@ export const getSuggestionsService = async (query) => {
             name: feature.place_name,
             address: feature.place_name,
             coordinates: feature.center,
-            
+
         }));
     } catch (error) {
         console.error('Suggestions error:', error.response?.data || error.message);
         throw new Error('Error fetching suggestions: ' + error.message);
+    }
+};
+
+export const getCaptainwithinRadiusService = async (lat, lng, radius) => {
+    try {
+        // Validate input coordinates
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            throw new Error('Invalid latitude or longitude values');
+        }
+
+        // Convert radius to radians
+        const radiusInRadians = radius / 6378.1;
+
+        // Query captains within the radius
+        const captains = await captainModel.find({
+            location: {
+                $geoWithin: {
+                    $centerSphere: [[lng, lat], radiusInRadians],
+                },
+            },
+        });
+
+        console.log('Captains within radius:', captains);
+        return captains;
+    } catch (error) {
+        console.error('Error fetching captains within radius:', error);
+        throw new Error('Error fetching captains within radius');
     }
 };

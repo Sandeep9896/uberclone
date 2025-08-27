@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { userdataContext } from '../context/Usercontext'; // Correct import
+import { SocketContext } from '../context/SocketContext';
 import axios from 'axios';
 
 const UserSignup = () => {
@@ -9,6 +10,7 @@ const UserSignup = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const { user, setUser } = useContext(userdataContext); // Correct usage
+    const {setIsLoggedIn} = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
 
@@ -30,7 +32,8 @@ const UserSignup = () => {
         if (response.status === 201) {
             // If the registration is successful, set the user context and navigate to home
             setUser(response.data);
-            LocalStorage.setItem('token', response.data.token); // store token in local storage
+            setIsLoggedIn(true); // Set login state to true
+            localStorage.setItem('token', response.data.token); // store token in local storage
             navigate('/home');
 
         }

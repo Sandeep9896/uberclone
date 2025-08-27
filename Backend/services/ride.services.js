@@ -7,7 +7,7 @@ export const getFare = async (pickupLocation, dropLocation) => {
         throw new Error('Pickup location and drop location are required');
     }
     const { distance, duration } = await map.getDistanceAndTimeService(pickupLocation, dropLocation);
-    console.log("Data from map service:",  distance, duration );
+    console.log("Data from map service:", distance, duration);
     if (distance === undefined || duration === undefined) {
         throw new Error('Unable to calculate distance and time');
     }
@@ -39,35 +39,53 @@ export const getFare = async (pickupLocation, dropLocation) => {
 //generate otp function using by crypto 
 
 export const generateOTP = async (num) => {
-    const otp =  crypto.randomInt(Math.pow(10, num-1), Math.pow(10, num)-1);
+    const otp = crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num) - 1);
     return otp;
 };
 
-export const createRideService = async (pickupLocation, dropLocation, userId, vechileType ) => {
+export const createRideService = async (pickupLocation, dropLocation, userId, vechileType) => {
     console.log("Creating ride with pickup:", pickupLocation, "drop:", dropLocation, "userId:", userId, "vehicleType:", vechileType);
-
+    const { distanceKm, durationFormatted } = await map.getDistanceAndTimeService(pickupLocation, dropLocation);
 
     try {
-        if (!pickupLocation || !dropLocation || !userId || !vechileType ) {
+        if (!pickupLocation || !dropLocation || !userId || !vechileType) {
             throw new Error('Pickup location, drop location, user ID, and vehicle type are required');
         }
 
         const fare = await getFare(pickupLocation, dropLocation);
-        console.log("Fare:", fare, vechileType );
+        console.log("Fare:", fare, vechileType);
         const otp = await generateOTP(6);
         console.log('Generated OTP:', otp);
 
-        const newRide =  Ridemodel.create({
+        const newRide = Ridemodel.create({
             pickupLocation,
             dropLocation,
-            userId,
-            fare: fare[vechileType ],
+            user: userId,
+            fare: fare[vechileType],
             otp,
             vehicleType: vechileType,
+            distance: distanceKm,
+            duration: durationFormatted,
         });
         return newRide;
     } catch (error) {
-       
+
         throw new Error('Error creating ride: ' + error.message);
+    }
+}
+
+export const confirmRideService = async (rideId, captainId) => {
+    try {
+        if (!rideId || !captainId) {
+            throw new Error('Ride ID and Captain ID are required');
+        }
+
+        await Ridemodel.findOneAndUpdate({ _id: rideId },
+            { captain: captainId, status: 'accepted' });
+
+        const ride = await Ridemodel.findById(rideId).populate('user').populate('captain');
+        return ride;
+    } catch (error) {
+        throw new Error('Error confirming ride: ' + error.message);
     }
 }

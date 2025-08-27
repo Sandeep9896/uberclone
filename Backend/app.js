@@ -14,13 +14,13 @@ dotenv.config();
 app.use(cookieParser());
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: "*", // Allow all origins for development, change in production
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
 
 app.use(express.urlencoded({ extended: true }));
-
+ 
 // Connect to the database
 connectDB();
 
@@ -41,6 +41,7 @@ app.use((err, req, res, next) => {
         message: err.message || 'Something went wrong!'
     });
 });
+
 
 export default app;
 // This is the main application file for the Express.js server.

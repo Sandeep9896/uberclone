@@ -3,6 +3,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { useContext } from 'react';
 import { captaindataContext } from '../context/CaptainContext.jsx';
+import { SocketContext } from '../context/SocketContext.jsx';
 import axios from 'axios';
 const CaptainSignup = () => {
     const [email, setEmail] = useState('');
@@ -14,9 +15,9 @@ const CaptainSignup = () => {
     const [vehicleColor, setVehicleColor] = useState('');
     const [vehicleCapacity, setVehicleCapacity] = useState('');
     const [vehicleType, setVehicleType] = useState('');
-   
 
-  const {setCaptain} = useContext(captaindataContext); // Correct usage
+    const { setCaptain } = useContext(captaindataContext); // Correct usage
+    const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
 
@@ -41,6 +42,7 @@ const CaptainSignup = () => {
             const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/captains/register`, newCaptain);
             if (response.status === 201) {
             setCaptain(response.data.captain);
+            setIsLoggedIn(true); // Set login state to true
             localStorage.setItem('token', response.data.token);
             navigate('/captain-home');
             }

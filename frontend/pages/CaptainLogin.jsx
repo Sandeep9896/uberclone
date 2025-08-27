@@ -3,18 +3,20 @@ import { useState,useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { captaindataContext } from '../context/CaptainContext.jsx';
+import { SocketContext } from '../context/SocketContext.jsx';
 import axios from 'axios';
 
 const CaptainLogin = () => {
   
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { setCaptain } = useContext(captaindataContext); // Correct usage
+    const { setCaptain, captain } = useContext(captaindataContext); // Correct usage
+    const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
+        if (token && captain) {
             // If token exists, redirect to captain home
             navigate('/captain-home');
         }
@@ -31,6 +33,7 @@ const CaptainLogin = () => {
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/captains/login`, loginData);
         if (response.status === 200) {
             setCaptain(response.data.captain); // set captain from backend response
+            setIsLoggedIn(true); // Set login state to true
             localStorage.setItem('token', response.data.token); // store token in local storage
             navigate('/captain-home');
         }

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import e from 'express';
 
 const rideSchema = new mongoose.Schema({
     pickupLocation: {
@@ -11,7 +12,7 @@ const rideSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         required: true
@@ -37,13 +38,13 @@ const rideSchema = new mongoose.Schema({
         default: 'pending' // Default status
     },
     duration: {
-        type: Number, //in seconds
-      
+        type: String, //in seconds
+        required: true,
         min: [0, 'Duration must be a positive number'] // Ensure duration is non-negative
     },
     distance: {
-        type: Number, //in meter
-       
+        type: String, //in meter
+        required: true,
         min: [0, 'Distance must be a positive number'] // Ensure distance is non-negative
     },
     paymentID: {
@@ -66,9 +67,10 @@ const rideSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
-        }
-    });
+        default: Date.now,
+        expires: '15m' // Ride document will expire after 15 minutes
+    }
+});
 
 const Ridemodel = mongoose.model('Ride', rideSchema);
 

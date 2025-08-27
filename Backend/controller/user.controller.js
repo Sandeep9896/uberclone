@@ -37,7 +37,6 @@ export const registerUser = async (req, res, next) => {
 
 export const loginUser = async (req, res, next) => {
 
-     console.log('Login request body:', req.body);
      const errors = validationResult(req);
      if (!errors.isEmpty()) {
           return res.status(400).json({ errors: errors.array() });
