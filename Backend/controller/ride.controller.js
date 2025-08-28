@@ -2,8 +2,10 @@ import { validationResult } from 'express-validator';
 import { createRideService, confirmRideService } from '../services/ride.services.js';
 import { getFare } from '../services/ride.services.js';
 import { getCaptainwithinRadiusService, getCoordinatesService } from '../services/map.service.js';
-import { sendMessageToSocket } from '../socketIO.js';
+import { sendMessage, sendMessageToSocket } from '../socketIO.js';
 import Ridemodel from '../models/ride.model.js';
+import captainModel from '../models/captain.model.js';
+
 
 export const createRide = async (req, res) => {
     const errors = validationResult(req);
@@ -99,17 +101,16 @@ export const confirmRide = async (req, res) => {
 }
 
 export const getAvailableRides = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+    const { userType, captainId } = req.body;
+    console.log('Get available rides request body:', req.body);
     try {
-        const rides = await Ridemodel.find({ status: 'pending' });
+        const captain = await captainModel.findById(captainId);
+        const rides = await Ridemodel.find({ status: 'pending' }).populate('user');
         res.status(200).json({
             success: true,
             rides
         });
-            socket.emit('AvailableRides', rides);
+            sendMessageToSocket(captain.socketId, 'AvailableRides', rides);
 
     } catch (error) {
         console.error('Get available rides error:', error);

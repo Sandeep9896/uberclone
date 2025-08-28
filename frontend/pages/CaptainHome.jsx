@@ -53,10 +53,14 @@ const CaptainHome = () => {
       clearInterval(locationInterval);
     };
   }, [socket]);
+  useEffect(() => {
+       receiveMessage('AvailableRides', (data) => {
+       console.log('Available rides received:', data);
+       setRides(data);
+    });
+  }, [receiveMessage]);
 
-  receiveMessage('AvailableRides', (data) => {
-    setRides(data);
-  });
+
   receiveMessage('new-ride', (data) => {
     setRideDetail(data);
     setRidePopupPanel(true);
@@ -129,7 +133,7 @@ const CaptainHome = () => {
     }
   };
 
-  const AvailableRide = async() => {
+  const AvailableRide = async () => {
     console.log("AvailableRide function called"); // <-- put BEFORE setState
     setRidePopupPanel(false);
     setAvailableRidePanel(true);
@@ -138,11 +142,15 @@ const CaptainHome = () => {
     //   userId: captain?._id
     // });
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/rides/available-rides`, {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/rides/available-rides`, {
+        userType: 'captain',
+        captainId: captain?._id
+      }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
+      console.log('Available rides fetched successfully:', res.data);
     }
     catch (error) {
       console.error('Error fetching available rides:', error);
@@ -150,44 +158,44 @@ const CaptainHome = () => {
   };
 
 
-return (
-  <div>
-    <div className='h-screen w-full '>
-      <div className='fixed w-full top-0 flex justify-between items-center p-5 '>
-        <img className=' w-16 ' src="images\uber.png" alt="" />
-        <Link to="/captains/logout" className='h-10 p-3 right-2 top-2 bg-white flex items-center justify-center rounded-full shadow-lg'>
-          <i className="tetx-lg font-medium ri-logout-box-r-line"></i>
-        </Link>
-      </div>
-      <div className='h-3/5 '>
-        <img className='h-full w-full object-cover' src="images/map.png" alt="" />
-      </div>
-      <div className='h-2/5 p-5 overflow-hidden'>
-        <CaptainDetail AvailableRide={AvailableRide} setAvailableRidePanel={setAvailableRidePanel} />
-      </div>
-      {AvailableRidepanel && (
-        <div ref={AvailableRidesRef} className='absolute  overflow-y-auto z-10 top-20  bg-white w-full h-fit px-3 py-6 pt-12'>
-          <AvailableRides handleRideSelect={handleRideSelect} setRidePopupPanel={setRidePopupPanel} setAvailableRidePanel={setAvailableRidePanel} ride={rides} confirmRide={confirmRide} />
+  return (
+    <div>
+      <div className='h-screen w-full '>
+        <div className='fixed w-full top-0 flex justify-between items-center p-5 '>
+          <img className=' w-16 ' src="images\uber.png" alt="" />
+          <Link to="/captains/logout" className='h-10 p-3 right-2 top-2 bg-white flex items-center justify-center rounded-full shadow-lg'>
+            <i className="tetx-lg font-medium ri-logout-box-r-line"></i>
+          </Link>
         </div>
-      )}
-      <div ref={ridePopPanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
+        <div className='h-3/5 '>
+          <img className='h-full w-full object-cover' src="images/map.png" alt="" />
+        </div>
+        <div className='h-2/5 p-5 overflow-hidden'>
+          <CaptainDetail AvailableRide={AvailableRide} setAvailableRidePanel={setAvailableRidePanel} />
+        </div>
+        {AvailableRidepanel && (
+          <div ref={AvailableRidesRef} className='absolute  overflow-y-auto z-10 top-20  bg-white w-full h-fit px-3 py-6 pt-12'>
+            <AvailableRides handleRideSelect={handleRideSelect} setRidePopupPanel={setRidePopupPanel} setAvailableRidePanel={setAvailableRidePanel} ride={rides} confirmRide={confirmRide} />
+          </div>
+        )}
+        <div ref={ridePopPanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
 
-        <h5
-          onClick={() => {
-            AvailableRide();
-          }}
-          className=' absolute  top-0 text-center w-[93%]  text-3xl z-50 cursor-pointer' >
-          <i className="ri-arrow-up-wide-line"></i>
-        </h5>
-        <RidePopUp setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} rideDetail={rideDetail} confirmRide={confirmRide} />
-      </div>
-      <div ref={confirmRidePopupRef} className='fixed z-10 h-screen bottom-0 translate-y-full justify-between bg-white w-full px-3 py-6 pt-12'>
-        <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
-      </div>
+          <h5
+            onClick={() => {
+              AvailableRide();
+            }}
+            className=' absolute  top-0 text-center w-[93%]  text-3xl z-50 cursor-pointer' >
+            <i className="ri-arrow-up-wide-line"></i>
+          </h5>
+          <RidePopUp setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} rideDetail={rideDetail} confirmRide={confirmRide} />
+        </div>
+        <div ref={confirmRidePopupRef} className='fixed z-10 h-screen bottom-0 translate-y-full justify-between bg-white w-full px-3 py-6 pt-12'>
+          <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
+        </div>
 
-    </div>
-  </div >
-)
+      </div>
+    </div >
+  )
 }
 
 export default CaptainHome

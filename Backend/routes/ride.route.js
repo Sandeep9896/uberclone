@@ -24,7 +24,7 @@ router.post('/confirm',
     body('captainId').notEmpty().withMessage('Captain ID is required'),
     rideController.confirmRide);
 
-router.get('/available-rides',
+router.post('/available-rides',
     authMiddleware.authCaptain,
     rideController.getAvailableRides);
 

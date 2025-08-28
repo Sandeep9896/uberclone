@@ -62,7 +62,7 @@ const home = () => {
     return () => {
       unsubscribe();
     };
-  }, [receiveMessage]);
+  }, [socket, receiveMessage]);
 
 
 

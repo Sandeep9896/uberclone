@@ -19,20 +19,15 @@ const AvailableRides = (props) => {
             >
                 {props.ride?.map((ride) => (
                     <li key={ride._id} className="p-4 hover:bg-gray-50 transition">
-                        <div onClick={() => props.handleRideSelect(ride)} className="flex items-start justify-between mx-2">
+                        <div  className="flex items-start justify-between mx-2">
                             <h2 className="text-lg font-medium text-gray-900">
-                                Ride ID: {ride._id}
+                                Name: {ride?.user?.fullname?.firstname}
                             </h2>
-                            <span
-                                className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${ride.status === 'completed'
-                                        ? 'bg-green-100 text-green-800'
-                                        : ride.status === 'cancelled'
-                                            ? 'bg-red-100 text-red-800'
-                                            : 'bg-yellow-100 text-yellow-800'
-                                    }`}
+                            <button onClick={() => props.handleRideSelect(ride)}
+                                className={` text-large items-center rounded-full px-2 py-1  font-medium ' bg-green-400 text-gray-800`}
                             >
-                                {ride.status}
-                            </span>
+                                Accept ride
+                            </button>
                         </div>
                         <dl className="mt-2 grid grid-cols-1 gap-1 text-sm text-gray-600 sm:grid-cols-2">
                             <div className="flex gap-2">

@@ -1,6 +1,7 @@
 import React from 'react'
 
 const RidePopUp = (props) => {
+  // console.log('rideDetail in RidePopUp:', props.rideDetail);
   return (
     <>
       <h3 className='text-2xl font-bold mb-5' >New Ride for you</h3>

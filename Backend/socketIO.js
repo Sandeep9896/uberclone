@@ -107,5 +107,12 @@ export const sendMessageToSocket = (socketId, eventName, message) => {
     io.to(socketId).emit(eventName, message);
     console.log(`Message sent to socket ${socketId}:`, { eventName, message });
 };
-
-
+// function to send message
+export const sendMessage = (eventName, message) => {
+    if (!io) {
+        console.error("Socket.IO is not initialized");
+        return;
+    }
+    io.emit(eventName, message);
+    console.log(`Message sent to all sockets:`, { eventName, message });
+};
