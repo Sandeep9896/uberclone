@@ -6,8 +6,10 @@ import axios from 'axios';
 const UserProtectwrapper = ({ children }) => {
   const { user, setUser } = useContext(userdataContext);
   const token = localStorage.getItem('token');
+  console.log("Token in UserProtectwrapper:", token);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -15,13 +17,13 @@ const UserProtectwrapper = ({ children }) => {
       setIsLoading(false);
       return;
     }
-    axios.get(`${import.meta.env.VITE_BASE_URL}/api/users/profile`, {
+   axios.get(`${import.meta.env.VITE_BASE_URL}/api/users/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }).then((response) => {
       if (response.status === 200) {
-        setUser(response.data.user);
+        setUser(response.data.user);``
         setIsLoading(false);
       }
     })
@@ -31,6 +33,7 @@ const UserProtectwrapper = ({ children }) => {
       setIsLoading(false);
     });
   // eslint-disable-next-line
+  console.log(responseData)
   }, [token, setUser]);
 
   if (isLoading) {

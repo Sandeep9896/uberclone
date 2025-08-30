@@ -12,7 +12,7 @@
     "color": "Black",
     "plate": "ABC-1234",
     "capacity": 4,
-    "vechileType": "car",
+    "vehicleType": "car",
     "location": {
       "lat": 24.8607,
       "lon": 67.0011

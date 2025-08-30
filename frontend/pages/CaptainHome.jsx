@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CaptainDetail from '../components/CaptainDetail';
 import RidePopUp from '../components/RidePopUp';
 import ConfirmRidePopUp from '../components/ConfirmRidePanel';
@@ -10,6 +10,8 @@ import { captaindataContext } from '../context/CaptainContext.jsx';
 import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import AvailableRides from '../components/AvailableRides.jsx';
+
+
 
 
 
@@ -47,16 +49,16 @@ const CaptainHome = () => {
       }
     };
 
-    const locationInterval = setInterval(updateLocation, 600000); // Update location every 10 minutes
+    const locationInterval = setInterval(updateLocation, 10000); // Update location every 10 seconds
 
     return () => {
       clearInterval(locationInterval);
     };
   }, [socket]);
   useEffect(() => {
-       receiveMessage('AvailableRides', (data) => {
-       console.log('Available rides received:', data);
-       setRides(data);
+    receiveMessage('AvailableRides', (data) => {
+      console.log('Available rides received:', data);
+      setRides(data);
     });
   }, [receiveMessage]);
 
@@ -114,6 +116,7 @@ const CaptainHome = () => {
     setRidePopupPanel(true);
     setAvailableRidePanel(false);
   };
+ 
 
 
   const confirmRide = async () => {
@@ -190,7 +193,7 @@ const CaptainHome = () => {
           <RidePopUp setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} rideDetail={rideDetail} confirmRide={confirmRide} />
         </div>
         <div ref={confirmRidePopupRef} className='fixed z-10 h-screen bottom-0 translate-y-full justify-between bg-white w-full px-3 py-6 pt-12'>
-          <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
+          <ConfirmRidePopUp rideDetail={rideDetail} setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
         </div>
 
       </div>

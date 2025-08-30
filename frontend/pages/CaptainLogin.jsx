@@ -39,7 +39,7 @@ const CaptainLogin = () => {
         }
       }
         catch (error) {
-                console.error('Error logging in:', error);
+                console.log('Error logging in:', error);
                 alert('Login failed. Please check your credentials.');
             }
         setEmail('');

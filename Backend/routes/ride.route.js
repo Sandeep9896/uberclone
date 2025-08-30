@@ -28,4 +28,10 @@ router.post('/available-rides',
     authMiddleware.authCaptain,
     rideController.getAvailableRides);
 
+router.get('/start-ride',
+    authMiddleware.authUser,
+    query('rideId').notEmpty().withMessage('Ride ID is required'),
+    query('otp').notEmpty().withMessage('OTP is required'),
+    rideController.startRide);
+
 export default router;

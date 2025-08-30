@@ -16,10 +16,14 @@ const WaitingForDriver = (props) => {
             <div className='text-right px-5'>
                 <h2 className='text-lg font-bold'> Driver : {props.ride?.captain?.fullname?.firstname}</h2>
                 <h4 className='text-xl font-semibold -mt-1 -mb-1'>Vehicle : {props.ride?.captain?.vehicle?.plate}</h4>
-                <p className='text-sm text-gray-600'>Type : {props.ride?.vehicleType}</p>
-                <p className='text-sm text-gray-600'>Capacity : {props.ride?.captain?.vehicle?.capacity}</p>
+                {/* <p className='text-sm text-gray-600'>Type : {props.ride?.vehicleType}</p>
+                <p className='text-sm text-gray-600'>Capacity : {props.ride?.captain?.vehicle?.capacity}</p> */}
             </div>
            </div>
+         <h5 className='  text-center mt-5 mb-[-15px] text-xl font-bold' >
+          OTP: {props.ride?.otp}
+         </h5>
+
             <div className='flex justify-between items-center flex-col' >
                 
                  <div className='w-full mt-5'>
@@ -42,7 +46,7 @@ const WaitingForDriver = (props) => {
                       <i className="ri-currency-line"></i>
                     <div>
                        <h3 className='text-lg font-medium'>{props.ride?.fare}</h3>
-                       <p className='text-sm -mt-1'>cash</p>
+                       <p className='text-sm -mt-1'>Total Fare</p>
                     </div>
                   </div>
                  

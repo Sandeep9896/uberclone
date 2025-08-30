@@ -117,14 +117,16 @@ export const getSuggestionsService = async (query) => {
 };
 
 export const getCaptainwithinRadiusService = async (lat, lng, radius) => {
+    // radius in meters
     try {
         // Validate input coordinates
         if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
             throw new Error('Invalid latitude or longitude values');
         }
 
-        // Convert radius to radians
-        const radiusInRadians = radius / 6378.1;
+        // Convert radius (meters) → radians
+        const earthRadiusInMeters = 6378137; // Earth's radius
+        const radiusInRadians = radius / earthRadiusInMeters;
 
         // Query captains within the radius
         const captains = await captainModel.find({
@@ -142,3 +144,4 @@ export const getCaptainwithinRadiusService = async (lat, lng, radius) => {
         throw new Error('Error fetching captains within radius');
     }
 };
+

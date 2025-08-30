@@ -13,13 +13,36 @@ app.use(express.json());
 dotenv.config();
 app.use(cookieParser());
 
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://3nj2k6xq-5173.inc1.devtunnels.ms", // your VS Code dev tunnel frontend
+  "https://2bac512bc7d1.ngrok-free.app"       // your backend ngrok
+];
+
 app.use(cors({
-    origin: "*", // Allow all origins for development, change in production
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("❌ CORS blocked origin:", origin);
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 app.use(express.urlencoded({ extended: true }));
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(200);
+});
+
  
 // Connect to the database
 connectDB();

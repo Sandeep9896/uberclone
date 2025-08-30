@@ -43,7 +43,7 @@ const ConfirmRide = (props) => {
                 <button onClick={
                     () => {
                         props.setConfirmRidePanel(false);
-                        props.setVechileFound(true);
+                        props.setvehicleFound(true);
                         props.createRide();
                     }
                 } className='w-full mt-5 bg-green-600 rounded-lg p-2'>Confirm Ride</button>

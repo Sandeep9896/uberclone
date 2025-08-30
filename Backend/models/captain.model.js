@@ -53,10 +53,11 @@ const captainSchema = new mongoose.Schema({
             required: true,
             min: [1, 'Capacity must be at least 1'], // Ensure capacity is a positive number
         },
-        vechileType:{
+        vehicleType:{
             type: String,
             required: true,
-            enum: ['car', 'bike', 'auto'], // Define possible vehicle types     
+            enum: ['car', 'bike', 'auto'],
+            model: "string" // Define possible vehicle types
         },
         location:{
             lat:{

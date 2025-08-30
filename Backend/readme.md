@@ -360,7 +360,7 @@ Registers a new captain.
     "color": "Black",
     "plate": "ABC-1234",
     "capacity": 4,
-    "vechileType": "car",
+    "vehicleType": "car",
     "location": {
       "lat": 24.8607,
       "lon": 67.0011
@@ -386,7 +386,7 @@ Registers a new captain.
       "color": "Black",
       "plate": "ABC-1234",
       "capacity": 4,
-      "vechileType": "car",
+      "vehicleType": "car",
       "location": {
         "lat": 24.8607,
         "lon": 67.0011
@@ -448,7 +448,7 @@ Authenticates a captain and returns a JWT token.
       "color": "Black",
       "plate": "ABC-1234",
       "capacity": 4,
-      "vechileType": "car",
+      "vehicleType": "car",
       "location": {
         "lat": 24.8607,
         "lon": 67.0011
@@ -496,7 +496,7 @@ Authorization: Bearer jwt_token_here
       "color": "Black",
       "plate": "ABC-1234",
       "capacity": 4,
-      "vechileType": "car",
+      "vehicleType": "car",
       "location": {
         "lat": 24.8607,
         "lon": 67.0011

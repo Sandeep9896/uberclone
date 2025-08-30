@@ -1,13 +1,14 @@
 import Ridemodel from "../models/ride.model.js";
 import * as map from '../services/map.service.js';
 import crypto, { verify } from 'crypto';
+import { sendMessageToSocket } from "../socketIO.js";
 // Assuming you have a map service for fare calculation
 export const getFare = async (pickupLocation, dropLocation) => {
     if (!pickupLocation || !dropLocation) {
         throw new Error('Pickup location and drop location are required');
     }
     const { distance, duration } = await map.getDistanceAndTimeService(pickupLocation, dropLocation);
-    console.log("Data from map service:", distance, duration);
+    console.log("vehicleTypee:", distance, duration);
     if (distance === undefined || duration === undefined) {
         throw new Error('Unable to calculate distance and time');
     }
@@ -43,17 +44,17 @@ export const generateOTP = async (num) => {
     return otp;
 };
 
-export const createRideService = async (pickupLocation, dropLocation, userId, vechileType) => {
-    console.log("Creating ride with pickup:", pickupLocation, "drop:", dropLocation, "userId:", userId, "vehicleType:", vechileType);
+export const createRideService = async (pickupLocation, dropLocation, userId, vehicleType) => {
+    console.log("Creating ride with pickup:", pickupLocation, "drop:", dropLocation, "userId:", userId, "vehicleType:", vehicleType);
     const { distanceKm, durationFormatted } = await map.getDistanceAndTimeService(pickupLocation, dropLocation);
 
     try {
-        if (!pickupLocation || !dropLocation || !userId || !vechileType) {
+        if (!pickupLocation || !dropLocation || !userId || !vehicleType) {
             throw new Error('Pickup location, drop location, user ID, and vehicle type are required');
         }
 
         const fare = await getFare(pickupLocation, dropLocation);
-        console.log("Fare:", fare, vechileType);
+        console.log("Fare:", fare, vehicleType);
         const otp = await generateOTP(6);
         console.log('Generated OTP:', otp);
 
@@ -61,9 +62,9 @@ export const createRideService = async (pickupLocation, dropLocation, userId, ve
             pickupLocation,
             dropLocation,
             user: userId,
-            fare: fare[vechileType],
+            fare: fare[vehicleType],
             otp,
-            vehicleType: vechileType,
+            vehicleType: vehicleType,
             distance: distanceKm,
             duration: durationFormatted,
         });
@@ -89,3 +90,36 @@ export const confirmRideService = async (rideId, captainId) => {
         throw new Error('Error confirming ride: ' + error.message);
     }
 }
+export const startRideService = async (rideId, otp) => {
+    console.log("Starting ride with ID:", rideId, "and OTP:", otp);
+    try {
+        if (!rideId || !otp) {
+            throw new Error('Ride ID and OTP are required');
+        }
+
+        // First fetch the ride without updating (to check OTP)
+        const ride = await Ridemodel.findById(rideId);
+        if (!ride) {
+            throw new Error('Ride not found');
+        }
+        console.log("Ride found:", ride.otp);
+        if (String(ride.otp) !== String(otp).trim()) {
+            throw new Error('Invalid OTP');
+        }
+
+        // Update status and return updated ride with populated fields
+        const updatedRide = await Ridemodel.findByIdAndUpdate(
+            rideId,
+            { status: 'ongoing' },
+            { new: true } // returns the updated document
+        ).populate('user').populate('captain');
+
+        // Emit event with updated ride
+        sendMessageToSocket(updatedRide.user.socketId, 'ride-started', updatedRide);
+
+        return updatedRide;
+    } catch (error) {
+        throw new Error('Error starting ride: ' + error.message);
+    }
+};
+

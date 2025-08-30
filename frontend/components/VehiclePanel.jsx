@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, memo } from 'react';
 
-const VechilePanel = (props) => {
+const VehiclePanel = (props) => {
     const [fareDetails, setFareDetails] = useState(props.fare || null);
     const [error, setError] = useState(null);
 
@@ -19,14 +19,14 @@ const VechilePanel = (props) => {
             img: 'images/car.webp'
         },
         {
-            type: 'Moto',
+            type: 'bike',
             seats: 1,
             time: '3 min away',
             price: fareDetails?.fare.bike || 65,
             img: 'images/bike.webp'
         },
         {
-            type: 'UberAuto',
+            type: 'auto',
             seats: 4,
             time: '5 min away',
             price: fareDetails?.fare.auto || 116.20,
@@ -39,7 +39,7 @@ const VechilePanel = (props) => {
     return (
         <>
             <h5
-                onClick={() => props.setVechilePanel(false)}
+                onClick={() => props.setvehiclePanel(false)}
                 className='absolute top-0 text-center w-[93%] text-3xl'>
                 <i className="ri-arrow-down-wide-line"></i>
             </h5>
@@ -49,7 +49,7 @@ const VechilePanel = (props) => {
                     key={v.type}
                     onClick={() => {
                         props.setConfirmRidePanel(true);
-                        props.setVechilePanel(false);
+                        props.setvehiclePanel(false);
                         props.setVehicleType(v.type); // Set the selected vehicle type
                         props.setVehicleImage(v.img); // Set the selected vehicle image
                     }}
@@ -71,4 +71,4 @@ const VechilePanel = (props) => {
     );
 };
 
-export default memo(VechilePanel);
+export default memo(VehiclePanel);

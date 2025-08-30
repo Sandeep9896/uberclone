@@ -4,7 +4,7 @@ const LookingForDiver = (props) => {
     return (
         <div>  <h5
             onClick={() => {
-                props.setVechileFound(false);
+                props.setvehicleFound(false);
             }
             }
             className=' absolute  top-0 text-center w-[93%]  text-3xl' >
@@ -45,7 +45,7 @@ const LookingForDiver = (props) => {
               onClick={
                 () => {
                     
-                    props.setVechileFound(false);
+                    props.setvehicleFound(false);
                     props.setWaitingPanel(true);
                 }
              }> continue</button> */}

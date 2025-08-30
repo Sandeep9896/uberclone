@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import { createRideService, confirmRideService } from '../services/ride.services.js';
+import { createRideService, confirmRideService,startRideService } from '../services/ride.services.js';
 import { getFare } from '../services/ride.services.js';
 import { getCaptainwithinRadiusService, getCoordinatesService } from '../services/map.service.js';
 import { sendMessage, sendMessageToSocket } from '../socketIO.js';
@@ -33,8 +33,8 @@ export const createRide = async (req, res) => {
         const pickupCoords = await getCoordinatesService(pickupLocation);
         console.log("Pickup Coordinates:", pickupCoords);
 
-        const captainsInRadius = await getCaptainwithinRadiusService(pickupCoords.lat, pickupCoords.lng, 1000); // Assuming 10 km radius
-         
+        const captainsInRadius = await getCaptainwithinRadiusService(pickupCoords.lat, pickupCoords.lng, 2000); // Assuming 500 meters radius
+
         ride.otp=null; // Remove OTP from the response
 
         const rideWithUser= await Ridemodel.findOne({_id: ride._id}).populate('user');
@@ -114,6 +114,27 @@ export const getAvailableRides = async (req, res) => {
 
     } catch (error) {
         console.error('Get available rides error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Something went wrong!'
+        });
+    }
+}
+export const startRide = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+      const { rideId, otp } = req.query;
+    try {
+        const ride = await startRideService(rideId, otp);
+        res.status(200).json({
+            success: true,
+            ride
+        });
+
+    } catch (error) {
+        console.error('Start ride error:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Something went wrong!'

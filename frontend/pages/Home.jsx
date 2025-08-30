@@ -1,11 +1,11 @@
-import React, { useRef, useState, useCallback, useContext, useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useRef, useState, useCallback, useContext, useEffect,  } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap';
 import 'remixicon/fonts/remixicon.css'
 import LocationSearchPanel from '../components/LocationSearchPanel';
-import VechilePanel from '../components/VechilePanel';
+import VehiclePanel from '../components/VehiclePanel';
 import ConfirmRide from '../components/ConfirmRide';
 import LookingForDiver from '../components/LookingForDiver';
 import WaitingForDriver from '../components/WaitingForDriver';
@@ -25,12 +25,13 @@ function debounce(fn, delay) {
 
 const home = () => {
 
+  const navigate = useNavigate();
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
-  const [vechilePanel, setVechilePanel] = useState(false);
+  const [vehiclePanel, setvehiclePanel] = useState(false);
   const [confirmRidePanel, setConfirmRidePanel] = useState(false);
-  const [vechileFound, setVechileFound] = useState(false);
+  const [vehicleFound, setvehicleFound] = useState(false);
   const [waitingPanel, setWaitingPanel] = useState(false);
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
@@ -43,6 +44,8 @@ const home = () => {
   const [isFareLoading, setIsFareLoading] = useState(false);
   const { socket, sendMessage, receiveMessage } = useContext(SocketContext);
   const { user } = useContext(userdataContext);
+  const barRef = useRef(null);
+
 
   useEffect(() => {
     if (socket && socket.connected && user) {
@@ -53,18 +56,24 @@ const home = () => {
   useEffect(() => {
     const unsubscribe = receiveMessage('confirm-ride', (data) => {
       console.log('Ride confirmed:', data);
-      setVechileFound(false);
+      setvehicleFound(false);
       setWaitingPanel(true);
       setRideDetails(data);
 
-    });
+    }, [socket, receiveMessage]);
 
     return () => {
       unsubscribe();
     };
   }, [socket, receiveMessage]);
 
+  receiveMessage('ride-started', (data) => {
+    console.log('Ride started:', data);
+    setWaitingPanel(false);
+    setRideDetails(data);
+    navigate('/riding', { state: { rideDetail: data } });
 
+  }, [socket, receiveMessage]);
 
   // Debounced handlers
   const debouncedPickupHandler = useCallback(
@@ -143,7 +152,7 @@ const home = () => {
 
     try {
       await fetchFare();
-      setVechilePanel(true);
+      setvehiclePanel(true);
       setPanelOpen(false);
 
     } catch (error) {
@@ -178,9 +187,9 @@ const home = () => {
   };
 
   const waitingPanelRef = useRef(null);
-  const vechileFoundRef = useRef(null);
+  const vehicleFoundRef = useRef(null);
   const confirmRidePanelRef = useRef(null);
-  const vechilePanelRef = useRef(null);
+  const vehiclePanelRef = useRef(null);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
 
@@ -212,17 +221,17 @@ const home = () => {
   }, [panelOpen]);
 
   useGSAP(() => {
-    if (vechilePanel) {
-      gsap.to(vechilePanelRef.current, {
+    if (vehiclePanel) {
+      gsap.to(vehiclePanelRef.current, {
         translateY: "0"
       });
     }
     else {
-      gsap.to(vechilePanelRef.current, {
+      gsap.to(vehiclePanelRef.current, {
         translateY: "100%"
       });
     }
-  }, [vechilePanel]);
+  }, [vehiclePanel]);
   // For confirm ride panel
   useGSAP(() => {
     if (confirmRidePanel) {
@@ -237,17 +246,17 @@ const home = () => {
     }
   }, [confirmRidePanel]);
   useGSAP(() => {
-    if (vechileFound) {
-      gsap.to(vechileFoundRef.current, {
+    if (vehicleFound) {
+      gsap.to(vehicleFoundRef.current, {
         translateY: "0"
       });
     }
     else {
-      gsap.to(vechileFoundRef.current, {
+      gsap.to(vehicleFoundRef.current, {
         translateY: "100%"
       });
     }
-  }, [vechileFound]);
+  }, [vehicleFound]);
   useGSAP(() => {
     if (waitingPanel) {
       gsap.to(waitingPanelRef.current, {
@@ -268,7 +277,7 @@ const home = () => {
 
   return (
     <div className='flex flex-col h-screen relative overflow-hidden'>
-      <div className='flex items-center flex-row justify-between z-2'>
+      <div ref={barRef} className='flex items-center flex-row justify-between '>
         <img className=' w-16 absolute left-5 top-5 ' src="images\uber.png" alt="" />
         <Link onClick={() => console.log("Logging out...")} to="/users/logout" className='h-12 w-12 p-3 absolute right-2 top-5 bg-white flex items-center justify-center rounded-full shadow-lg'>
           <i className="text-lg font-medium ri-logout-box-r-line"></i>
@@ -316,10 +325,10 @@ const home = () => {
 
         </div>
       </div>
-      <div ref={vechilePanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
-        <VechilePanel
+      <div ref={vehiclePanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
+        <VehiclePanel
           setConfirmRidePanel={setConfirmRidePanel}
-          setVechilePanel={setVechilePanel}
+          setvehiclePanel={setvehiclePanel}
           setVehicleType={setVehicleType}
           setVehicleImage={setVehicleImage}
           fare={fareDetails}
@@ -328,7 +337,7 @@ const home = () => {
       <div ref={confirmRidePanelRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
         <ConfirmRide
           setConfirmRidePanel={setConfirmRidePanel}
-          setVechileFound={setVechileFound}
+          setvehicleFound={setvehicleFound}
           createRide={createRide}
           pickup={pickup}
           destination={destination}
@@ -337,12 +346,12 @@ const home = () => {
           vehicleType={vehicleType}
         />
       </div>
-      <div ref={vechileFoundRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
+      <div ref={vehicleFoundRef} className='fixed z-10 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12'>
         <LookingForDiver
           setConfirmRidePanel={setConfirmRidePanel}
-          setVechilePanel={setVechilePanel}
+          setvehiclePanel={setvehiclePanel}
           ride={rideDetails}
-          setVechileFound={setVechileFound}
+          setvehicleFound={setvehicleFound}
           setWaitingPanel={setWaitingPanel}
         />
       </div>

@@ -25,14 +25,20 @@ export const registerCaptain = async (req, res) => {
             fullname,
             email,
             password: hashedPassword,
-            vehicle,status
+            vehicle,
+            status
         });
+
+        // Generate a token for the new captain
+        const token = await captain.generateAuthToken();
 
         res.status(201).json({
             success: true,
             message: 'Captain registered successfully',
-            captain
+            captain,
+            token // <-- Add this line
         });
+        res.cookie('token', token);
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -65,6 +71,7 @@ export const loginCaptain = async (req, res) => {
 
         // Generate a token (if needed)
         const token = await captain.generateAuthToken();
+        console.log("helloooooooo",token);
         // Set the token in a cookie (optional)
         res.cookie('token', token);
 

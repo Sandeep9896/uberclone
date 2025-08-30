@@ -89,7 +89,7 @@ fullname { firstname, lastname }
 email (unique)
 password (hashed, select:false)
 status: inactive | active | banned (default inactive)
-vehicle: { color, plate (unique), capacity, vechileType (car|bike|auto), location { lat, lon } }
+vehicle: { color, plate (unique), capacity, vehicleType (car|bike|auto), location { lat, lon } }
 socketId
 ```
 ### Ride
