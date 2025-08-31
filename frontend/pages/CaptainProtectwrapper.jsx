@@ -15,7 +15,7 @@ const CaptainProtectwrapper = ({ children }) => {
             setIsLoading(false);
             return;
         }
-        axios.get(`${import.meta.env.VITE_BASE_URL}/api/captains/profile`, {
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/captains/profile`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

@@ -31,7 +31,7 @@ const UserLogin = () => {
 
         try {
             const response = await axios.post(
-                `${import.meta.env.VITE_BASE_URL}/api/users/login`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
                 loginData
             );
             if (response.status === 200) {

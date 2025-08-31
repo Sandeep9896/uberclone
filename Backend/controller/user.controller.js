@@ -57,7 +57,6 @@ export const loginUser = async (req, res, next) => {
      const token = await user.generateAuthToken();
 
      // Set the token in a cookie
-     res.cookie('token', token )
 
 
      res.status(200).json({ user, token });
@@ -72,7 +71,7 @@ export const getUserProfile = async (req, res, next) => {
 
 }
 export const logoutUser = async (req, res, next) => {
-     const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+     const token = req.headers.authorization?.split(' ')[1];
      if (!token) {
           return res.status(401).json({ message: "Unauthorized access" });
      }

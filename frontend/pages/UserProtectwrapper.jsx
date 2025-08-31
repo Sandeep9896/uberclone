@@ -17,7 +17,7 @@ const UserProtectwrapper = ({ children }) => {
       setIsLoading(false);
       return;
     }
-   axios.get(`${import.meta.env.VITE_BASE_URL}/api/users/profile`, {
+   axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

@@ -30,7 +30,7 @@ const CaptainLogin = () => {
         };
   
       try{
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/captains/login`, loginData);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/captains/login`, loginData);
         if (response.status === 200) {
             setCaptain(response.data.captain); // set captain from backend response
             setIsLoggedIn(true); // Set login state to true

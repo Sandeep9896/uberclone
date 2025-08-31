@@ -106,12 +106,12 @@ export const getCaptainProfile = async (req, res) => {
     }
 }
 export const logoutCaptain = async (req, res) => {
-     const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-         if (!token) {
-              return res.status(401).json({ message: "Unauthorized access" });
-         }
-    
-         // Add the token to the blacklist
+     const token = req.headers.authorization?.split(' ')[1];
+     if (!token) {
+          return res.status(401).json({ message: "Unauthorized access" });
+     }
+
+     // Add the token to the blacklist
        await blacklistTokenModel.create({ token });
     
          // Clear the cookie

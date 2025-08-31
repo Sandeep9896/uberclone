@@ -121,7 +121,7 @@ const CaptainHome = () => {
 
   const confirmRide = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/rides/confirm`, {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/rides/confirm`, {
         rideId: rideDetail._id,
         captainId: captain._id
       },
@@ -145,7 +145,7 @@ const CaptainHome = () => {
     //   userId: captain?._id
     // });
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/rides/available-rides`, {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/rides/available-rides`, {
         userType: 'captain',
         captainId: captain?._id
       }, {

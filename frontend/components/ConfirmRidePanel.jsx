@@ -14,7 +14,7 @@ const ConfirmRidePanel = (props) => {
 
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/rides/start-ride`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/rides/start-ride`,
         {
           params: {   // ✅ use params instead of query
             rideId: props.rideDetail._id,

@@ -26,8 +26,8 @@ const UserSignup = () => {
             password: password
         };
 
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/users/register`, newUser);
-        console.log(import.meta.env.VITE_BASE_URL);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`, newUser);
+        console.log(import.meta.env.VITE_BACKEND_URL);
 
         if (response.status === 201) {
             // If the registration is successful, set the user context and navigate to home

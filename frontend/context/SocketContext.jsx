@@ -19,7 +19,7 @@ export const SocketProvider = ({ children }) => {
       return; // Do not initialize the socket if the user is not logged in
     }
 
-    const url = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
+    const url = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
     socketRef.current = io(url, {
       transports: ['websocket', 'polling'],

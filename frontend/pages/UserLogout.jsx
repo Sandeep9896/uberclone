@@ -13,7 +13,7 @@ const UserLogout = () => {
             try {
                 if (token) {
                     await axios.get(
-                        `${import.meta.env.VITE_BASE_URL}/api/users/logout`,
+                        `${import.meta.env.VITE_BACKEND_URL}/api/users/logout`,
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`

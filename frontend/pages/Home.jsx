@@ -82,7 +82,7 @@ const home = () => {
         const token = localStorage.getItem('token');
         if (token) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/api/maps/get-suggestions?input=${value}`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions?input=${value}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           setPickupSuggestions(response.data.suggestions);
@@ -100,7 +100,7 @@ const home = () => {
         const token = localStorage.getItem('token');
         if (token) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/api/maps/get-suggestions?input=${value}`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions?input=${value}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           setDestinationSuggestions(response.data.suggestions);
@@ -126,7 +126,7 @@ const home = () => {
     setIsFareLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/rides/get-fares`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/rides/get-fares`,
         {
           params: {
             pickupLocation: pickup,
@@ -168,7 +168,7 @@ const home = () => {
     console.log("Creating ride with vehicle type:", vehicleType);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/rides/create-ride`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/rides/create-ride`,
         {
           pickupLocation: pickup,
           dropLocation: destination,
