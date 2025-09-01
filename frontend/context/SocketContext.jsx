@@ -26,6 +26,7 @@ export const SocketProvider = ({ children }) => {
       auth: { token },
       withCredentials: true,
       reconnectionAttempts: 5,
+      query: { 'ngrok-skip-browser-warning': 'true' }
     });
     setSocket(socketRef.current);
     const s = socketRef.current;

@@ -100,8 +100,14 @@ const home = () => {
         const token = localStorage.getItem('token');
         if (token) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions?input=${value}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions`,
+            {
+              params: { input: value },
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
+              }
+            }
           );
           setDestinationSuggestions(response.data.suggestions);
         }

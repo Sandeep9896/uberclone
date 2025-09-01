@@ -17,7 +17,8 @@ const CaptainProtectwrapper = ({ children }) => {
         }
         axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/captains/profile`, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
             }
         })
         .then((response) => {
@@ -36,9 +37,9 @@ const CaptainProtectwrapper = ({ children }) => {
         return <div>Loading...</div>;
     }
 
-    if (authError || !captain) {
-        return <Navigate to="/captain-login" replace />;
-    }
+    // if (authError ) {
+    //     return <Navigate to="/captain-login" replace />;
+    // }
 
     return children;
 };

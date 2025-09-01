@@ -5,6 +5,7 @@ import captainModel from '../models/captain.model.js';
 
 
 export const authUser = async(req, res, next)=> {
+    if (req.method === 'OPTIONS') return next();
 
     const token =req.headers.authorization?.split(' ')[1];
     console.log("Token from auth middleware:", req.headers.authorization);
@@ -33,6 +34,7 @@ export const authUser = async(req, res, next)=> {
 
 }
 export const authCaptain = async(req, res, next)=> {
+    if (req.method === 'OPTIONS') return next();
 
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
