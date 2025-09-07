@@ -77,6 +77,9 @@ export const getDistanceAndTimeService = async (origin, destination) => {
         const hours = Math.floor(route.duration / 3600);
         const minutes = Math.floor((route.duration % 3600) / 60);
         return {
+            route: route.geometry,
+            captainCoords: originCoords,
+            userCoords: destCoords,
             distance: route.distance, // meters
             duration: route.duration, // seconds
             distanceKm: (route.distance / 1000).toFixed(2) + ' km',
@@ -89,16 +92,20 @@ export const getDistanceAndTimeService = async (origin, destination) => {
         throw new Error('Error fetching distance and time: ' + error.message);
     }
 };
-export const getSuggestionsService = async (query) => {
+export const getSuggestionsService = async (query, lng, lat) => {
     try {
         const url = `${MAPBOX_BASE_URL}/${encodeURIComponent(query)}.json`;
+
         const response = await axios.get(url, {
             params: {
                 access_token: API_KEY,
-                limit: 20, // Limit to 5 suggestions
-
-            }
+                autocomplete: true,   // 🔑 live typing suggestions
+                limit: 10,            // number of suggestions
+                proximity: `${lng},${lat}`, // 🔑 bias towards user's location
+                types: "poi,address,place", // 🔑 restrict results to useful types
+            },
         });
+
 
         if (!response.data || !response.data.features || response.data.features.length === 0) {
             throw new Error('No suggestions found for the given query.');

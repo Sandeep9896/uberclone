@@ -12,6 +12,8 @@ import WaitingForDriver from '../components/WaitingForDriver';
 import FindRide from '../components/FindRide';
 import { SocketContext } from '../context/SocketContext';
 import { userdataContext } from '../context/Usercontext';
+import LiveLocation from '../components/LiveLocation';
+import { LocationContext } from '../context/LocationContext';
 
 
 // Debounce utility
@@ -45,13 +47,42 @@ const home = () => {
   const { socket, sendMessage, receiveMessage } = useContext(SocketContext);
   const { user } = useContext(userdataContext);
   const barRef = useRef(null);
+  const {setUserCoords,UserCoords} = useContext(LocationContext);
+  const coordsRef= useRef(null);
+
 
 
   useEffect(() => {
     if (socket && socket.connected && user) {
       sendMessage('join', { userType: 'user', userId: user._id });
     }
-  }, [socket, user]);
+     const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        const payload = {
+          userType: "user",
+          userId: user._id,
+          location: { lat: latitude, lng: longitude },
+        };
+
+        sendMessage("update-location-user", payload);
+        setUserCoords({ lat: latitude, lng: longitude });
+        coordsRef.current = { lat: latitude, lng: longitude };
+      },
+      (err) => {
+        console.error("User geolocation error:", err);
+      },
+      {
+        enableHighAccuracy: true, // use GPS if available
+        timeout: 20000,           // wait up to 20s before failing
+        maximumAge: 0,            // don’t use cached location
+      }
+    );
+    // Cleanup when component unmounts
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [socket, user?._id]);
+  
 
   useEffect(() => {
     const unsubscribe = receiveMessage('confirm-ride', (data) => {
@@ -75,15 +106,22 @@ const home = () => {
 
   }, [socket, receiveMessage]);
 
+  
+
   // Debounced handlers
   const debouncedPickupHandler = useCallback(
+   
     debounce(async (value) => {
       try {
+        console.log(coordsRef.current);
         const token = localStorage.getItem('token');
         if (token) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions?input=${value}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions`,
+            {
+              params: { input: value, lng: coordsRef.current?.lng, lat: coordsRef.current?.lat },
+              headers: { Authorization: `Bearer ${token}` }
+            }
           );
           setPickupSuggestions(response.data.suggestions);
         }
@@ -282,7 +320,7 @@ const home = () => {
   }
 
   return (
-    <div className='flex flex-col h-screen relative overflow-hidden'>
+    <div className='w-full h-screen max-w-screen-xl mx-auto px-4 overflow-hidden flex flex-col'>
       <div ref={barRef} className='flex items-center flex-row justify-between '>
         <img className=' w-16 absolute left-5 top-5 ' src="images\uber.png" alt="" />
         <Link onClick={() => console.log("Logging out...")} to="/users/logout" className='h-12 w-12 p-3 absolute right-2 top-5 bg-white flex items-center justify-center rounded-full shadow-lg'>
@@ -291,7 +329,7 @@ const home = () => {
       </div>
       <div className='h-screen w-screen  '>
         {/* image for temprary use */}
-        <img className='h-full w-full object-cover' src="images/map.png" alt="" />
+       <LiveLocation coords={UserCoords} />
       </div>
      
 

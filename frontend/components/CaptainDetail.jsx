@@ -3,6 +3,7 @@ import React from 'react'
 import { captaindataContext } from '../context/CaptainContext';
 
 const CaptainDetail = (props) => {
+  
   const { captain } = useContext(captaindataContext);
 
   return (

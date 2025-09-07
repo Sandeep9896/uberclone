@@ -8,6 +8,7 @@ const CaptainProtectwrapper = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [authError, setAuthError] = useState(false);
     const token = localStorage.getItem('token');
+    const [login, setLogin] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -24,6 +25,7 @@ const CaptainProtectwrapper = ({ children }) => {
         .then((response) => {
             setCaptain(response.data.captain);
             setIsLoading(false);
+            setLogin(true);
         })
         .catch((error) => {
             console.error("Error fetching captain profile:", error);
@@ -35,6 +37,11 @@ const CaptainProtectwrapper = ({ children }) => {
 
     if (isLoading) {
         return <div>Loading...</div>;
+    }
+
+    if(!login){
+        localStorage.removeItem('token');
+        return <Navigate to="/captain-login" replace />;
     }
 
     // if (authError ) {

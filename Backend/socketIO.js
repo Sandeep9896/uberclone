@@ -72,6 +72,27 @@ export const initSocket = (httpServer, opts = {}) => {
         });
        
 
+        socket.on('update-location-user', async (data) => {
+            console.log('Received update-location-user event:', data);
+
+            const { userType, userId, location } = data;
+            if (userType !== 'user' || !userId || !location || !location.lat || !location.lng) {
+                console.error('Invalid update-location payload:', data);
+                return;
+            }
+
+            const { lat, lng } = location;
+            try {
+                const user = await userModel.findByIdAndUpdate(
+                    userId,
+                    { $set: { location: { type: 'Point', coordinates: [lng, lat] } } },
+                    { new: true }
+                );
+                console.log('Updated user location:', user);
+            } catch (error) {
+                console.error('Error updating user location:', error);
+            }
+        });
         socket.on('update-location-captain', async (data) => {
             console.log('Received update-location-captain event:', data);
 

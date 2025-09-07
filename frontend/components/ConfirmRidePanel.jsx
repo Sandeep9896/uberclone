@@ -98,6 +98,7 @@ const ConfirmRidePanel = (props) => {
               onClick={() => {
                 props.setConfirmRidePopupPanel(false);
                 props.setRidePopupPanel(false);
+                props.setLiveRoutePopup(false);
               }}
               className='w-full  bg-red-500 text-white  font-semibold rounded-lg p-3'>Cancel</button>
 

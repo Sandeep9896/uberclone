@@ -33,5 +33,14 @@ router.get('/start-ride',
     query('rideId').notEmpty().withMessage('Ride ID is required'),
     query('otp').notEmpty().withMessage('OTP is required'),
     rideController.startRide);
+router.post('/end-ride',
+    authMiddleware.authCaptain,
+    body('rideId').notEmpty().withMessage('Ride ID is required'),
+    rideController.endRide);
 
+router.post('/live-route',
+        authMiddleware.authCaptain,
+        body('rideId').notEmpty().withMessage('Ride ID is required'),
+    rideController.liveRoute);
+   
 export default router;

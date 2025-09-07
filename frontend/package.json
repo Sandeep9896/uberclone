@@ -12,10 +12,13 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.11",
+    "@types/mapbox-gl": "^3.4.1",
     "axios": "^1.10.0",
     "gsap": "^3.13.0",
+    "mapbox-gl": "^3.14.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-map-gl": "^8.0.4",
     "react-router-dom": "^7.6.3",
     "remixicon": "^4.6.0",
     "socket.io-client": "^4.8.1",

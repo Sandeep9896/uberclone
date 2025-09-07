@@ -46,9 +46,10 @@ const RidePopUp = (props) => {
             className=' bg-gray-300 text gray-700  font-semibold rounded-lg px-10 p-2'>ignore</button>
           <button
             onClick={() => {
-              props.setConfirmRidePopupPanel(true);
+              props.setLiveRoutePopup(true);
               props.setRidePopupPanel(false);
               props.confirmRide();
+              props.liveLocation();
             }}
             className=' bg-green-600 text-white font-semibold rounded-lg px-10 p-2'>Accept</button>
 

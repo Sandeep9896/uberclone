@@ -1,9 +1,20 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
+import { useContext } from 'react';
+import { SocketContext } from '../context/SocketContext.jsx';
+import CheckoutRazorpay from '../paymentGateway/CheckoutRazorpay.jsx';
+
 
 const Riding = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { rideDetail } = location.state || {};
+    const { receiveMessage } = useContext(SocketContext);
+
+    receiveMessage('ride-ended', (data) => {
+    console.log('Ride ended:', data);
+    navigate('/home');
+  });
 
     return (
         <div className='h-screen w-full'>
@@ -43,15 +54,10 @@ const Riding = () => {
                         </div>
                     </div>
                 </div>
-                <button onClick={
-                    () => {
-                        // Handle ride completion logic here
-                        alert("Ride completed!");
-                    }
-                } className='w-full mt-5 bg-green-600 rounded-lg p-2'>Make a Payment</button>
+                <CheckoutRazorpay amount={rideDetail?.fare} />
             </div>
         </div>
     )
 }
 
-export default Riding
+export default Riding;

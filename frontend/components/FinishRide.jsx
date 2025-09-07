@@ -1,8 +1,30 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+
 
 const FinishRide = (props) => {
-    
+
+    const navigate = useNavigate();
+    const completeRide = async () => {
+        try {
+            await axios.post('/api/rides/end-ride',
+                { rideId: props.rideDetail._id },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ custom header
+                        "Content-Type": "application/json",  // usually needed
+                    },
+                }
+            );
+            props.setFinishRidePanel(false);
+            navigate('/captain-home');
+        } catch (error) {
+            console.error("Error completing ride:", error);
+        }
+    };
+
     return (
         <div>
             <h5
@@ -48,11 +70,9 @@ const FinishRide = (props) => {
                 </div>
                 <div className='mt-6 w-full flex justify-center'>
 
-                    <Link to="/captain-home"
-                        onClick={() => {
-
-                        }}
-                        className='w-full  text-center bg-green-600 text-white font-semibold rounded-lg p-3'>Finish Ride</Link>
+                    <button
+                        onClick={completeRide}
+                        className='w-full  text-center bg-green-600 text-white font-semibold rounded-lg p-3'>Finish Ride</button>
                 </div>
             </div>
         </div>

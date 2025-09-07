@@ -56,9 +56,9 @@ export const getSuggestions = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const { input } = req.query;
+        const { input, lng, lat } = req.query;
         // Assuming you have a service function to get suggestions
-        const suggestions = await getSuggestionsService(input);
+        const suggestions = await getSuggestionsService(input, lng, lat);
         // For now, just returning the input as a placeholder
 
         res.status(200).json({

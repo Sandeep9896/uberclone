@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import { createRideService, confirmRideService,startRideService } from '../services/ride.services.js';
+import { createRideService, confirmRideService, startRideService, endRideService, liveRouteService } from '../services/ride.services.js';
 import { getFare } from '../services/ride.services.js';
 import { getCaptainwithinRadiusService, getCoordinatesService } from '../services/map.service.js';
 import { sendMessage, sendMessageToSocket } from '../socketIO.js';
@@ -135,6 +135,56 @@ export const startRide = async (req, res) => {
 
     } catch (error) {
         console.error('Start ride error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Something went wrong!'
+        });
+    }
+}
+
+export const endRide = async (req, res) => {
+    console.log("Headers:", req.headers);
+    console.log("Body:", req.body);
+    console.log("Captain/User:", req.captain || req.user);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { rideId } = req.body;
+    try {
+        const ride = await endRideService(rideId, req.captain);
+        res.status(200).json({
+            success: true,
+            ride
+        });
+
+         sendMessageToSocket(ride.user.socketId, 'ride-ended', ride);
+
+    } catch (error) {
+        console.error('End ride error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Something went wrong!'
+        });
+    }
+}
+
+export const liveRoute= async(req,res)=>{
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { rideId,captainId} = req.body;
+    try {
+        const ride = await liveRouteService(rideId, captainId);
+        res.status(200).json({
+            success: true,
+            ride
+        });
+
+    } catch (error) {
+        console.error('Live route error:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Something went wrong!'

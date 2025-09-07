@@ -10,6 +10,7 @@ const UserProtectwrapper = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [responseData, setResponseData] = useState(null);
+  const [login, setLogin] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -23,8 +24,9 @@ const UserProtectwrapper = ({ children }) => {
       }
     }).then((response) => {
       if (response.status === 200) {
-        setUser(response.data.user);``
+        setUser(response.data.user);
         setIsLoading(false);
+        setLogin(true);
       }
     })
     .catch((error) => {
@@ -43,6 +45,10 @@ const UserProtectwrapper = ({ children }) => {
   //   localStorage.removeItem('token'); // Clear token if error occurs
   //   return <Navigate to="/login" replace />;
   // }
+  if (!login) {
+    localStorage.removeItem('token');
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 };
