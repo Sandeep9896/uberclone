@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { userdataContext } from '../context/Usercontext'; // Correct import
 import { SocketContext } from '../context/SocketContext';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../src/slices/userSlice';
 import axios from 'axios';
 
 const UserSignup = () => {
@@ -9,7 +10,8 @@ const UserSignup = () => {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const { user, setUser } = useContext(userdataContext); // Correct usage
+    const dispatch= useDispatch();
+
     const {setIsLoggedIn} = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ const UserSignup = () => {
 
         if (response.status === 201) {
             // If the registration is successful, set the user context and navigate to home
-            setUser(response.data);
+            dispatch(setUser(response.data.user)); // set user in redux store
             setIsLoggedIn(true); // Set login state to true
             localStorage.setItem('token', response.data.token); // store token in local storage
             navigate('/home');

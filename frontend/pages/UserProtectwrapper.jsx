@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { userdataContext } from '../context/Usercontext';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { setUser } from '../src/slices/userSlice';
 import axios from 'axios';
 
 const UserProtectwrapper = ({ children }) => {
-  const { user, setUser } = useContext(userdataContext);
+  const dispatch = useDispatch();
   const token = localStorage.getItem('token');
-  console.log("Token in UserProtectwrapper:", token);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [responseData, setResponseData] = useState(null);
-  const [login, setLogin] = useState(false);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
     if (!token) {
@@ -24,9 +24,8 @@ const UserProtectwrapper = ({ children }) => {
       }
     }).then((response) => {
       if (response.status === 200) {
-        setUser(response.data.user);
+        dispatch(setUser(response.data.user));
         setIsLoading(false);
-        setLogin(true);
       }
     })
     .catch((error) => {
@@ -34,18 +33,13 @@ const UserProtectwrapper = ({ children }) => {
       setError(true);
       setIsLoading(false);
     });
-  // eslint-disable-next-line
-  console.log(responseData)
   }, [token, setUser]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  // if (error ) {
-  //   localStorage.removeItem('token'); // Clear token if error occurs
-  //   return <Navigate to="/login" replace />;
-  // }
-  if (!login) {
+
+  if (!isLoggedIn || error) {
     localStorage.removeItem('token');
     return <Navigate to="/login" replace />;
   }

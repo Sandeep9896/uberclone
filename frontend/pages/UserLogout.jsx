@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
-import { userdataContext } from '../context/Usercontext';
-
+import { useDispatch } from 'react-redux';
+import { logout } from '../src/slices/userSlice';
 const UserLogout = () => {
     const [loggedOut, setLoggedOut] = useState(false);
-    const { setUser } = useContext(userdataContext);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const logout = async () => {
+        const logoutfn = async () => {
             try {
                 if (token) {
                     await axios.get(
@@ -22,7 +22,7 @@ const UserLogout = () => {
                     ).then((res) => {
                         if (res.status == 200) {
                             localStorage.removeItem('token');
-                            setUser(null);
+                            dispatch(logout());
                             setLoggedOut(true);
                         }
                     })
@@ -31,8 +31,8 @@ const UserLogout = () => {
                 console.error('Error logging out:', error);
             }
         };
-        logout();
-    }, [setUser]);
+        logoutfn();
+    }, [dispatch]);
 
     if (loggedOut) {
         return <Navigate to="/login" replace />;

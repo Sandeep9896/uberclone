@@ -8,6 +8,8 @@ import { UserProvider } from '../context/Usercontext';
 import { CaptainProvider } from '../context/CaptainContext.jsx'
 import { SocketProvider } from '../context/SocketContext.jsx'
 import { LocationProvider } from '../context/LocationContext.jsx';
+import { Provider } from "react-redux";
+import store from './store/store.js'
 import axios from 'axios';
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL; // your ngrok backend
@@ -33,7 +35,9 @@ createRoot(document.getElementById('root')).render(
         <UserProvider>
           <BrowserRouter>
           <LocationProvider>
-            <App />
+            <Provider store={store}>
+              <App />
+            </Provider>
             </LocationProvider>
           </BrowserRouter>
         </UserProvider>

@@ -14,6 +14,7 @@ import { SocketContext } from '../context/SocketContext';
 import { userdataContext } from '../context/Usercontext';
 import LiveLocation from '../components/LiveLocation';
 import { LocationContext } from '../context/LocationContext';
+import { useSelector } from 'react-redux';
 
 
 // Debounce utility
@@ -45,10 +46,11 @@ const home = () => {
   const [vehicleImage, setVehicleImage] = useState(null);
   const [isFareLoading, setIsFareLoading] = useState(false);
   const { socket, sendMessage, receiveMessage } = useContext(SocketContext);
-  const { user } = useContext(userdataContext);
+  // const { user } = useContext(userdataContext);
   const barRef = useRef(null);
   const {setUserCoords,UserCoords} = useContext(LocationContext);
   const coordsRef= useRef(null);
+  const user = useSelector((state) => state.user);
 
 
 

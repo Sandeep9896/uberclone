@@ -1,15 +1,15 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, useContext,useEffect } from 'react';
-import { userdataContext } from '../context/Usercontext';
 import { SocketContext } from '../context/SocketContext';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../src/slices/userSlice';
 import axios from 'axios';
 
 const UserLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const { setUser } = useContext(userdataContext);
+    const dispatch = useDispatch();
     const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ const UserLogin = () => {
                 loginData
             );
             if (response.status === 200) {
-                setUser(response.data.user); // set user from backend response
+                dispatch(setUser(response.data.user)); // set user in redux store
                 setIsLoggedIn(true); // Set login state to true
                 localStorage.setItem('token', response.data.token); // store token in local storage
                 navigate('/home');
