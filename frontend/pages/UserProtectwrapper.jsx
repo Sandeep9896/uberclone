@@ -16,7 +16,6 @@ const UserProtectwrapper = ({ children }) => {
     if (!token) {
       setError(true);
       setIsLoading(false);
-      return;
     }
    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile`, {
       headers: {

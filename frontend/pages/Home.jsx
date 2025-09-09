@@ -11,7 +11,6 @@ import LookingForDiver from '../components/LookingForDiver';
 import WaitingForDriver from '../components/WaitingForDriver';
 import FindRide from '../components/FindRide';
 import { SocketContext } from '../context/SocketContext';
-import { userdataContext } from '../context/Usercontext';
 import LiveLocation from '../components/LiveLocation';
 import { LocationContext } from '../context/LocationContext';
 import { useSelector } from 'react-redux';
@@ -50,11 +49,12 @@ const home = () => {
   const barRef = useRef(null);
   const {setUserCoords,UserCoords} = useContext(LocationContext);
   const coordsRef= useRef(null);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
 
 
 
   useEffect(() => {
+    console.log(user)
     if (socket && socket.connected && user) {
       sendMessage('join', { userType: 'user', userId: user._id });
     }
@@ -142,7 +142,7 @@ const home = () => {
           const response = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/api/maps/get-suggestions`,
             {
-              params: { input: value },
+              params: { input: value, lat: coordsRef.current?.lat, lng: coordsRef.current?.lng },
               headers: {
                 Authorization: `Bearer ${token}`,
                 'ngrok-skip-browser-warning': 'true'

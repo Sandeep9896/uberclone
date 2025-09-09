@@ -6,7 +6,7 @@ import ConfirmRidePopUp from "../components/ConfirmRidePanel";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SocketContext } from "../context/SocketContext";
-import { captaindataContext } from "../context/CaptainContext.jsx";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import AvailableRides from "../components/AvailableRides.jsx";
 import LiveLocation from "../components/LiveLocation.jsx";
@@ -23,7 +23,7 @@ const CaptainHome = () => {
   const [AvailableRidepanel, setAvailableRidePanel] = useState(false);
   const liveRouteRef = useRef(null);
   const { sendMessage, receiveMessage, socket } = useContext(SocketContext);
-  const { captain } = useContext(captaindataContext);
+  const captain = useSelector((state) => state.captain.captain);
   const [liveRoute, setLiveRoute] = useState([]);
   const { setCaptainCoords, captainCoords, userCoords } = useContext(LocationContext);
   const [liveRoutePopup, setLiveRoutePopup] = useState(false);
@@ -97,6 +97,12 @@ const CaptainHome = () => {
         minHeight: liveRouteRef.current ? "90vh" : "0",
       });
     }
+     else{
+        gsap.to(liveRouteRef.current, {
+          translateY: "100%",
+          minHeight: "0",
+        });
+      }
   }, [liveRoutePopup]);
 
   useGSAP(() => {

@@ -3,9 +3,11 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../src/slices/userSlice';
+import { useSelector } from 'react-redux';
 const UserLogout = () => {
-    const [loggedOut, setLoggedOut] = useState(false);
+    
     const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -23,7 +25,6 @@ const UserLogout = () => {
                         if (res.status == 200) {
                             localStorage.removeItem('token');
                             dispatch(logout());
-                            setLoggedOut(true);
                         }
                     })
                 }
@@ -34,7 +35,7 @@ const UserLogout = () => {
         logoutfn();
     }, [dispatch]);
 
-    if (loggedOut) {
+    if (!isLoggedIn) {
         return <Navigate to="/login" replace />;
     }
 

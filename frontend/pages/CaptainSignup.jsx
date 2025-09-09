@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { useContext } from 'react';
 import { captaindataContext } from '../context/CaptainContext.jsx';
+import { useDispatch } from 'react-redux';
+import { setCaptain } from '../src/slices/captainSlice.js';
 import { SocketContext } from '../context/SocketContext.jsx';
 import axios from 'axios';
 const CaptainSignup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userdata, setUserdata] = useState({});
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [vehiclePlate, setVehiclePlate] = useState('');
@@ -17,7 +18,7 @@ const CaptainSignup = () => {
     const [vehicleType, setVehicleType] = useState('');
     const [model, setModel] = useState('');
 
-    const { setCaptain } = useContext(captaindataContext); // Correct usage
+    const dispatch = useDispatch();
     const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
@@ -43,7 +44,7 @@ const CaptainSignup = () => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/captains/register`, newCaptain);
             if (response.status === 201) {
-                setCaptain(response.data.captain);
+                dispatch(setCaptain(response.data.captain));
                 setIsLoggedIn(true); // Set login state to true
                 localStorage.setItem('token', response.data.token);
                 navigate('/captain-home');

@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import React from 'react'
 import { captaindataContext } from '../context/CaptainContext';
+import { useSelector } from 'react-redux';
 
 const CaptainDetail = (props) => {
-  
-  const { captain } = useContext(captaindataContext);
+  const captain=useSelector((state)=>state.captain.captain);
 
   return (
     <>

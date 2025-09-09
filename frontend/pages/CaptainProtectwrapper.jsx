@@ -1,20 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { captaindataContext } from '../context/CaptainContext';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setCaptain } from '../src/slices/captainSlice';
+import { useSelector } from 'react-redux';
 
 const CaptainProtectwrapper = ({ children }) => {
-    const { captain, setCaptain } = useContext(captaindataContext);
-    const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch();    
     const [authError, setAuthError] = useState(false);
     const token = localStorage.getItem('token');
-    const [login, setLogin] = useState(false);
+    const isLoggedIn = useSelector((state) => state.captain.isLoggedIn);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (!token) {
             setAuthError(true);
             setIsLoading(false);
-            return;
         }
         axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/captains/profile`, {
             headers: {
@@ -23,9 +24,8 @@ const CaptainProtectwrapper = ({ children }) => {
             }
         })
         .then((response) => {
-            setCaptain(response.data.captain);
+            dispatch(setCaptain(response.data.captain));
             setIsLoading(false);
-            setLogin(true);
         })
         .catch((error) => {
             console.error("Error fetching captain profile:", error);
@@ -39,14 +39,10 @@ const CaptainProtectwrapper = ({ children }) => {
         return <div>Loading...</div>;
     }
 
-    if(!login){
+    if(!isLoggedIn || authError) {
         localStorage.removeItem('token');
         return <Navigate to="/captain-login" replace />;
     }
-
-    // if (authError ) {
-    //     return <Navigate to="/captain-login" replace />;
-    // }
 
     return children;
 };

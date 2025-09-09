@@ -4,16 +4,19 @@ import { captaindataContext } from '../context/CaptainContext';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { logout } from '../src/slices/captainSlice';
+import { useSelector } from 'react-redux';
 import { SocketContext } from '../context/SocketContext';
 
 const CaptainLogout = () => {
-    const [loggedOut, setLoggedOut] = useState(false);
-    const { captain, setCaptain } = useContext(captaindataContext);
     const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
+    const dispatch = useDispatch();
+    const isLoggedIn=useSelector((state)=>state.captain.isLoggedIn)
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const logout = async () => {
+        const logoutfn = async () => {
             try {
                 if (token) {
                     await axios.get(
@@ -26,8 +29,7 @@ const CaptainLogout = () => {
                     ).then((res) => {
                         if (res.status === 200) {
                             localStorage.removeItem('token');
-                            setCaptain(null);
-                            setLoggedOut(true);
+                           dispatch(logout());
                             setIsLoggedIn(false); // Set login state to false
                         }
                     })
@@ -37,9 +39,9 @@ const CaptainLogout = () => {
                 console.error('Error logging out:', error);
             }
         }
-        logout();
-    }, [setCaptain]);
-    if (loggedOut) {
+        logoutfn();
+    }, [dispatch]);
+    if (!isLoggedIn) {
         return <Navigate to="/captain-login" replace />;
 
     }
