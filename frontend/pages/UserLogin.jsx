@@ -4,14 +4,18 @@ import { useState, useContext,useEffect } from 'react';
 import { SocketContext } from '../context/SocketContext';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../src/slices/userSlice';
+import { startLocationWatcher } from '../src/utils/locationWatcher';
+import { setUserLocation, setUserLocationWatchId } from '../src/slices/locationSlice.js';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 const UserLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
+    const { setIsLoggedIn, sendMessage } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
+    const user = useSelector((state) => state.user.user);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -38,6 +42,7 @@ const UserLogin = () => {
                 dispatch(setUser(response.data.user)); // set user in redux store
                 setIsLoggedIn(true); // Set login state to true
                 localStorage.setItem('token', response.data.token); // store token in local storage
+                localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.user._id }, role: "user" }));
                 navigate('/home');
             }
         } catch (error) {

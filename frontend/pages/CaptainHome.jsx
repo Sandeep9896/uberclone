@@ -10,8 +10,10 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import AvailableRides from "../components/AvailableRides.jsx";
 import LiveLocation from "../components/LiveLocation.jsx";
-import { LocationContext } from "../context/LocationContext.jsx";
+import { setCaptainLocation, setAuth } from "../src/slices/locationSlice.js";
 import LiveRoute from "../components/LiveRoute.jsx";
+import { startLocationWatcher, stopLocationWatcher } from "../src/utils/locationWatcher.jsx"
+import { useDispatch } from "react-redux";
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const ridePopPanelRef = useRef(null);
@@ -24,47 +26,32 @@ const CaptainHome = () => {
   const liveRouteRef = useRef(null);
   const { sendMessage, receiveMessage, socket } = useContext(SocketContext);
   const captain = useSelector((state) => state.captain.captain);
+  const captainLocation = useSelector((state) => state.location.captainLocation);
   const [liveRoute, setLiveRoute] = useState([]);
-  const { setCaptainCoords, captainCoords, userCoords } = useContext(LocationContext);
   const [liveRoutePopup, setLiveRoutePopup] = useState(false);
+  const dispatch = useDispatch();
+  const saved = localStorage.getItem("auth");
 
   // join as captain + send location
 
   useEffect(() => {
+    if (saved) {
+      dispatch(setAuth(JSON.parse(saved)))
+    }
     sendMessage("join", {
       userType: "captain",
       userId: captain?._id,
     });
-    if (!socket || !captain?._id) return;
 
-    // Start watching
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-
-        const payload = {
-          userType: "captain",
-          userId: captain._id,
-          location: { lat: latitude, lng: longitude },
-        };
-
-        console.log("Captain live location:", userCoords);
-
+    const watchId = startLocationWatcher({                          // start fetching captain Location
+      userType: "captain",
+      userId: captain._id,
+      onUpdate: (payload, coords) => {
+        console.log("Captain live location:", coords);
         sendMessage("update-location-captain", payload);
-        setCaptainCoords({ lat: latitude, lng: longitude });
-
-      },
-      (err) => {
-        console.error("Captain geolocation error:", err);
-      },
-      {
-        enableHighAccuracy: true, // use GPS if available
-        timeout: 20000,           // wait up to 20s before failing
-        maximumAge: 0,            // don’t use cached location
+        dispatch(setCaptainLocation(coords));
       }
-    );
-    // Cleanup when component unmounts
-    return () => navigator.geolocation.clearWatch(watchId);
+    });
   }, [socket, captain?._id]);
 
   // available rides
@@ -97,12 +84,12 @@ const CaptainHome = () => {
         minHeight: liveRouteRef.current ? "90vh" : "0",
       });
     }
-     else{
-        gsap.to(liveRouteRef.current, {
-          translateY: "100%",
-          minHeight: "0",
-        });
-      }
+    else {
+      gsap.to(liveRouteRef.current, {
+        translateY: "100%",
+        minHeight: "0",
+      });
+    }
   }, [liveRoutePopup]);
 
   useGSAP(() => {
@@ -196,7 +183,7 @@ const CaptainHome = () => {
 
       {/* Map section */}
       <div className="h-3/5 relative z-0">
-        <LiveLocation coords={captainCoords} />
+        <LiveLocation coords={captainLocation} />
       </div>
 
       {/* Bottom details */}

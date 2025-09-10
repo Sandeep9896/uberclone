@@ -8,11 +8,13 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../src/slices/captainSlice';
 import { useSelector } from 'react-redux';
 import { SocketContext } from '../context/SocketContext';
+import { stopLocationWatcher } from '../src/utils/locationWatcher';
 
 const CaptainLogout = () => {
     const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
     const dispatch = useDispatch();
-    const isLoggedIn=useSelector((state)=>state.captain.isLoggedIn)
+    const isLoggedIn = useSelector((state) => state.captain.isLoggedIn);
+    const captainLocationWatchId = useSelector((state) => state.location.captainLocationWatchId);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -30,6 +32,7 @@ const CaptainLogout = () => {
                         if (res.status === 200) {
                             localStorage.removeItem('token');
                            dispatch(logout());
+                           stopLocationWatcher(captainLocationWatchId);
                             setIsLoggedIn(false); // Set login state to false
                         }
                     })

@@ -3,9 +3,12 @@ import React, { useEffect, useState, useContext } from "react";
 import Map, { Marker, Source, Layer } from "react-map-gl/mapbox";
 import { LocationContext } from "../context/LocationContext.jsx";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function LiveRoute(props) {
-    const { userCoords, captainCoords } = useContext(LocationContext);
+    // const { userCoords, captainCoords } = useContext(LocationContext);
+    const captainCoords = useSelector((state) => state.location.captainLocation);
+    const userCoords = useSelector((state) => state.location.userLocation);
     const [viewState, setViewState] = useState({
         longitude: captainCoords?.lng ,
         latitude: captainCoords?.lat ,

@@ -6,6 +6,8 @@ import { captaindataContext } from '../context/CaptainContext.jsx';
 import { useDispatch } from 'react-redux';
 import { setCaptain } from '../src/slices/captainSlice.js';
 import { SocketContext } from '../context/SocketContext.jsx';
+import { setCaptainLocation, setCaptainLocationWatchId } from '../src/slices/locationSlice.js';
+import { startLocationWatcher } from '../src/utils/locationWatcher.jsx';
 import axios from 'axios';
 const CaptainSignup = () => {
     const [email, setEmail] = useState('');
@@ -47,6 +49,7 @@ const CaptainSignup = () => {
                 dispatch(setCaptain(response.data.captain));
                 setIsLoggedIn(true); // Set login state to true
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.captain._id }, role: "captain" }));
                 navigate('/captain-home');
             }
         } catch (error) {
@@ -116,13 +119,13 @@ const CaptainSignup = () => {
                 <h3 className='text-base font-medium mb-2'>Vehicle Details</h3>
                 {/* vehicle plate input field */}
                 <input
-                        type="text"
-                        placeholder='Vehicle Plate Number'
-                        value={vehiclePlate}
-                        onChange={(e) => setVehiclePlate(e.target.value)}
-                        required
-                        className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-full mb-2'
-                    />
+                    type="text"
+                    placeholder='Vehicle Plate Number'
+                    value={vehiclePlate}
+                    onChange={(e) => setVehiclePlate(e.target.value)}
+                    required
+                    className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-full mb-2'
+                />
                 <div className='flex gap-4 mb-1'>
                     <input
                         type="text"

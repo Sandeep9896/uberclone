@@ -8,6 +8,7 @@ const UserLogout = () => {
     
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    const userLocationWatchId = useSelector((state) => state.location.userLocationWatchId);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -25,6 +26,7 @@ const UserLogout = () => {
                         if (res.status == 200) {
                             localStorage.removeItem('token');
                             dispatch(logout());
+                            stopLocationWatcher(userLocationWatchId);
                         }
                     })
                 }

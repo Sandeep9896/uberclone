@@ -1,9 +1,22 @@
 import React from 'react'
 import{ Link } from 'react-router-dom'
+import { useEffect } from "react";
 
 
 
 const Start = () => {
+    useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        () => {
+          console.log("✅ Location permission granted (or cached).");
+        },
+        (err) => {
+          console.warn("⚠️ Location permission denied:", err);
+        }
+      );
+    }
+  }, []);
     return (
         <div>
 

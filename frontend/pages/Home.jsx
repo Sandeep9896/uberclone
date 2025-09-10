@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useContext, useEffect,  } from 'react'
+import React, { useRef, useState, useCallback, useContext, useEffect, } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useGSAP } from '@gsap/react'
@@ -12,8 +12,10 @@ import WaitingForDriver from '../components/WaitingForDriver';
 import FindRide from '../components/FindRide';
 import { SocketContext } from '../context/SocketContext';
 import LiveLocation from '../components/LiveLocation';
-import { LocationContext } from '../context/LocationContext';
+import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux';
+import { startLocationWatcher, stopLocationWatcher } from "../src/utils/locationWatcher.jsx"; //utility
+import { setAuth, setUserLocation } from "../src/slices/locationSlice.js"
 
 
 // Debounce utility
@@ -47,44 +49,32 @@ const home = () => {
   const { socket, sendMessage, receiveMessage } = useContext(SocketContext);
   // const { user } = useContext(userdataContext);
   const barRef = useRef(null);
-  const {setUserCoords,UserCoords} = useContext(LocationContext);
-  const coordsRef= useRef(null);
+  const dispatch = useDispatch();
+  const coordsRef = useRef(null);
   const user = useSelector((state) => state.user.user);
-
+  const userLocation = useSelector((state) => state.location.userLocation);
+  const saved = localStorage.getItem("auth");
 
 
   useEffect(() => {
-    console.log(user)
+    if (saved) {
+      dispatch(setAuth(JSON.parse(saved)))
+    }
     if (socket && socket.connected && user) {
       sendMessage('join', { userType: 'user', userId: user._id });
     }
-     const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
 
-        const payload = {
-          userType: "user",
-          userId: user._id,
-          location: { lat: latitude, lng: longitude },
-        };
-
+    const watchId = startLocationWatcher({
+      userType: "user",
+      userId: user._id,
+      onUpdate: (payload, coords) => {
+        console.log("User live location:", coords);
         sendMessage("update-location-user", payload);
-        setUserCoords({ lat: latitude, lng: longitude });
-        coordsRef.current = { lat: latitude, lng: longitude };
-      },
-      (err) => {
-        console.error("User geolocation error:", err);
-      },
-      {
-        enableHighAccuracy: true, // use GPS if available
-        timeout: 20000,           // wait up to 20s before failing
-        maximumAge: 0,            // don’t use cached location
+        dispatch(setUserLocation(coords));
       }
-    );
-    // Cleanup when component unmounts
-    return () => navigator.geolocation.clearWatch(watchId);
+    })
   }, [socket, user?._id]);
-  
+
 
   useEffect(() => {
     const unsubscribe = receiveMessage('confirm-ride', (data) => {
@@ -108,11 +98,11 @@ const home = () => {
 
   }, [socket, receiveMessage]);
 
-  
+
 
   // Debounced handlers
   const debouncedPickupHandler = useCallback(
-   
+
     debounce(async (value) => {
       try {
         console.log(coordsRef.current);
@@ -317,7 +307,7 @@ const home = () => {
   }, [waitingPanel]);
   // Example where useMemo would help:
   const findRideParentRef = useRef(null);
-  if(panelOpen){
+  if (panelOpen) {
     findRideParentRef.current.style.zIndex = "10";
   }
 
@@ -331,9 +321,9 @@ const home = () => {
       </div>
       <div className='h-screen w-screen  '>
         {/* image for temprary use */}
-       <LiveLocation coords={UserCoords} />
+        <LiveLocation coords={userLocation} />
       </div>
-     
+
 
       <div ref={findRideParentRef} className=' h-screen flex flex-col  justify-end absolute top-0 w-full  '>
         <FindRide

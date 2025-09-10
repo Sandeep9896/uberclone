@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../context/SocketContext';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../src/slices/userSlice';
+import { setUserLocation, setUserLocationWatchId } from '../src/slices/locationSlice';
+import { startLocationWatcher } from '../src/utils/locationWatcher';
 import axios from 'axios';
 
 const UserSignup = () => {
@@ -10,9 +12,9 @@ const UserSignup = () => {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const dispatch= useDispatch();
+    const dispatch = useDispatch();
 
-    const {setIsLoggedIn} = useContext(SocketContext); // Check if user is logged in
+    const { setIsLoggedIn, sendMessage } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
 
@@ -36,6 +38,7 @@ const UserSignup = () => {
             dispatch(setUser(response.data.user)); // set user in redux store
             setIsLoggedIn(true); // Set login state to true
             localStorage.setItem('token', response.data.token); // store token in local storage
+            localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.user._id }, role: "user" }));
             navigate('/home');
 
         }
