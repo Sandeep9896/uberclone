@@ -1,51 +1,57 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Start from '../pages/Start'
-import UserLogin from '../pages/UserLogin'
-import UserSignup from '../pages/UserSignup'
-import CaptainLogin from '../pages/CaptainLogin'
-import CaptainSignup from '../pages/CaptainSignup'
-import UserProtectwrapper from '../pages/UserProtectwrapper'
-import Home from '../pages/Home'
-import UserLogout from '../pages/UserLogout.jsx'
-import CaptainHome from '../pages/CaptainHome.jsx'
-import CaptainProtectwrapper from '../pages/CaptainProtectwrapper.jsx'
-import Riding from '../pages/Riding.jsx'
-import CaptainLogout from '../pages/CaptainLogout.jsx'
-import CaptainRiding from '../pages/CaptainRiding.jsx'
+import Start from './pages/Start.jsx'
+import UserLogin from './pages/userPages/UserLogin.jsx'
+import UserSignup from './pages/userPages/UserSignup.jsx'
+import CaptainLogin from './pages/captainPage/CaptainLogin.jsx'
+import CaptainSignup from './pages/captainPage/CaptainSignup.jsx'
+import UserProtectwrapper from './pages/userPages/UserProtectwrapper.jsx'
+import Home from './pages/userPages/Home.jsx'
+import UserLogout from './pages/userPages/UserLogout.jsx'
+import CaptainHome from './pages/captainPage/CaptainHome.jsx'
+import CaptainProtectwrapper from './pages/captainPage/CaptainProtectwrapper.jsx'
+import CaptainLogout from './pages/captainPage/CaptainLogout.jsx'
+// import CaptainRiding from './pages/captainPage/FinishRide1.jsx'
+import CaptainRiding from './pages/captainPage/CaptainRiding.jsx'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCaptainLocation, setUserLocation } from './slices/locationSlice.js'
-import { startLocationWatcher,stopLocationWatcher } from './utils/locationWatcher.jsx'
-import { SocketContext } from '../context/SocketContext.jsx'
+import { setCaptainLocation, setUserLocation, setWatchId } from './slices/locationSlice.js'
+import { startLocationWatcher, stopLocationWatcher } from './utils/locationWatcher.jsx'
+import { SocketContext } from './context/SocketContext.jsx'
 import { useEffect } from 'react'
+import SearchLocation from './pages/userPages/SearchLocation.jsx'
+import UserLayout from './layout/UserLayout.jsx'
+import UserConfirmRide from './pages/userPages/UserConfirmRide.jsx'
+import Riding from './pages/userPages/Riding.jsx'
+import CaptainLayout from './layout/captainLayout.jsx'
 
 const App = () => {
   const { user, role } = useSelector((state) => state.location?.Auth) || "";
+  // const userLocation=useSelector((state) => state.location?.userLocation) || "";
   const { socket, sendMessage, receiveMessage } = React.useContext(SocketContext);
   const dispatch = useDispatch();
   useEffect(() => {
     if (user) {
-     const watchId = startLocationWatcher({
+      const watchId = startLocationWatcher({
         userType: role,
         userId: user._id,
         onUpdate: (payload, coords) => {
-          
+
           if (role === "user") {
             sendMessage("update-location-user", payload);
             dispatch(setUserLocation(coords));
-            console.log("User live location:", coords);
+            // console.log("User live location:", coords);
           }
           else if (role === "captain") {
             sendMessage("update-location-captain", payload);
             dispatch(setCaptainLocation(coords));
-            console.log("Captain live location:", coords);
+            // console.log("Captain live location:", coords);
           }
         }
-      } 
-     )
-    //  dispatch(stopLocationWatcher(watchId));
+      }
+      )
+      dispatch(setWatchId(watchId));
     }
-    
+
   }, [user, role, sendMessage]);
 
   return (
@@ -54,20 +60,48 @@ const App = () => {
         <Route path="/" element={<Start />} />
         <Route path="/login" element={<UserLogin />} />
         <Route path="/signup" element={<UserSignup />} />
-        <Route path="/riding" element={<Riding />} />
+
         <Route path="/captain-login" element={<CaptainLogin />} />
         <Route path="/captain-signup" element={<CaptainSignup />} />
-        <Route path="/captain-riding" element={<CaptainRiding />} />
-        <Route path="/home" element={
-          <UserProtectwrapper>
-            <Home />
-          </UserProtectwrapper>
-        } />
-        <Route path="/users/logout" element={
-          <UserProtectwrapper>
-            <UserLogout />
-          </UserProtectwrapper>
-        } />
+        <Route path="/captain-ride" element={<CaptainRiding />} />
+        <Route path="/user" element={<UserLayout />}>
+          <Route
+            path="home"
+            element={<UserProtectwrapper><Home /></UserProtectwrapper>}
+          />
+          <Route
+            path="search-location"
+            element={<SearchLocation />}
+          />
+          <Route
+            path="confirm-Ride"
+            element={<UserProtectwrapper><UserConfirmRide /></UserProtectwrapper>}
+          />
+
+          <Route
+            path="logout"
+            element={<UserProtectwrapper><UserLogout /></UserProtectwrapper>}
+          />
+
+          <Route
+            path="riding"
+            element={<UserProtectwrapper><Riding /></UserProtectwrapper>}
+          />
+
+          <Route
+            path="logout"
+            element={<UserProtectwrapper><UserLogout /></UserProtectwrapper>}
+          />
+
+        </Route>
+        <Route path="/user/search-Location" element={<SearchLocation />} />
+
+        <Route path="/captain" element={<CaptainLayout />} >
+          <Route path="home" element={<CaptainProtectwrapper><CaptainHome /></CaptainProtectwrapper>} />
+          <Route path="rides" element={<CaptainProtectwrapper><CaptainRiding /></CaptainProtectwrapper>} />
+          <Route path="logout" element={<CaptainProtectwrapper><CaptainLogout /></CaptainProtectwrapper>} />
+        </Route>
+
         <Route path="/captain-home" element={
           <CaptainProtectwrapper>
             <CaptainHome />

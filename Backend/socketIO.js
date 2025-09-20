@@ -70,7 +70,7 @@ export const initSocket = (httpServer, opts = {}) => {
                 }
             }
         });
-       
+
 
         socket.on('update-location-user', async (data) => {
             console.log('Received update-location-user event:', data);
@@ -114,26 +114,47 @@ export const initSocket = (httpServer, opts = {}) => {
                 console.error('Error updating captain location:', error);
             }
         });
+        socket.on('payment_success', async (data) => {
+            console.log('Received payment_success event:', data);
+            // Handle payment success (e.g., update ride status, notify users)
+            const { rideId } = data;
+            if (!rideId) {
+                console.error('Invalid payment_success payload:', data);
+                return;
+            }
+            try {
+                const ride = await Ridemodel.findByIdAndUpdate(
+                    rideId,
+                    { $set: { status: 'completed' } },
+                    { new: true }
+                ).populate('user').populate('captain');
+                console.log("helooooooooooooooooooooooooooooooooo", ride);
+                io.to(ride.user.socketId).emit('send_payment_success', ride);
+                io.to(ride.captain.socketId).emit('send_payment_success', ride);
+            } catch (error) {
+                console.error('Error updating ride status:', error);
+            }
+        });
     });
 
-    return io;
-};
+        return io;
+    };
 
-// Function to send a message to a specific socket ID
-export const sendMessageToSocket = (socketId, eventName, message) => {
-    if (!io) {
-        console.error("Socket.IO is not initialized");
-        return;
-    }
-    io.to(socketId).emit(eventName, message);
-    console.log(`Message sent to socket ${socketId}:`, { eventName, message });
-};
-// function to send message
-export const sendMessage = (eventName, message) => {
-    if (!io) {
-        console.error("Socket.IO is not initialized");
-        return;
-    }
-    io.emit(eventName, message);
-    console.log(`Message sent to all sockets:`, { eventName, message });
-};
+    // Function to send a message to a specific socket ID
+    export const sendMessageToSocket = (socketId, eventName, message) => {
+        if (!io) {
+            console.error("Socket.IO is not initialized");
+            return;
+        }
+        io.to(socketId).emit(eventName, message);
+        console.log(`Message sent to socket ${socketId}:`, { eventName, message });
+    };
+    // function to send message
+    export const sendMessage = (eventName, message) => {
+        if (!io) {
+            console.error("Socket.IO is not initialized");
+            return;
+        }
+        io.emit(eventName, message);
+        console.log(`Message sent to all sockets:`, { eventName, message });
+    };

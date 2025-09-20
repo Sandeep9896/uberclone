@@ -79,7 +79,7 @@ export const getDistanceAndTimeService = async (origin, destination) => {
         return {
             route: route.geometry,
             captainCoords: originCoords,
-            userCoords: destCoords,
+            destCoords: destCoords,
             distance: route.distance, // meters
             duration: route.duration, // seconds
             distanceKm: (route.distance / 1000).toFixed(2) + ' km',

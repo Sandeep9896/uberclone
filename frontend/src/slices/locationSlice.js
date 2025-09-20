@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  Auth:null,
-  userLocation:{
+  Auth: null,
+  userLocation: {
     lat: null,
     lng: null
   },
-  userLocationWatchId: null,
-  captainLocationWatchId: null,
-  coords: null,
+  watchId: null,
+  liveRoute: null,
   captainLocation: {
     lat: null,
     lng: null
@@ -25,20 +24,17 @@ const locationSlice = createSlice({
     setCaptainLocation: (state, action) => {
       state.captainLocation = action.payload;
     },
-    setUserLocationWatchId: (state, action) => {
-      state.userLocationWatchId = action.payload;
+    setLiveRoute: (state, action) => {
+      state.liveRoute = action.payload;
     },
-    setCaptainLocationWatchId: (state, action) => {
-      state.captainLocationWatchId = action.payload;
-    },
-    setCoords: (state, action) => {
-      state.coords = action.payload;
-    },
-    setAuth:(state, action)=>{
+    setAuth: (state, action) => {
       state.Auth = action.payload;
+    },
+    setWatchId: (state, action) => {
+      state.watchId = action.payload;
     }
   },
 });
 
-export const { setUserLocation, setCaptainLocation, setUserLocationWatchId, setCaptainLocationWatchId,setCoords,setAuth } = locationSlice.actions;
+export const { setUserLocation, setCaptainLocation, setLiveRoute, setAuth, setWatchId } = locationSlice.actions;
 export default locationSlice.reducer;

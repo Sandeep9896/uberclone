@@ -150,10 +150,11 @@ export const endRideService = async (rideId,captain) => {
     }
 };
 
-export const liveRouteService = async (rideId, captain) => {
+export const liveRouteService = async (rideId, captain, dropLocation) => {
+      console.log("Fetching live route for ride ID:", rideId, "and captain ID:", captain, "dropLocation:", dropLocation);
     try {
-        if (!rideId || !captain) {
-            throw new Error('Ride ID and Captain are required');
+        if (!rideId || !captain || !dropLocation) {
+            throw new Error('Ride ID, Captain, and Drop Location are required');
         }
 
         const ride = await Ridemodel.findById(rideId).populate('user').populate('captain');
@@ -161,8 +162,8 @@ export const liveRouteService = async (rideId, captain) => {
             lat: ride.captain.location.coordinates[1],
             lng: ride.captain.location.coordinates[0]
         };
-
-        const liveroute = await map.getDistanceAndTimeService(captaincords, ride.pickupLocation);
+        // const dropcoords = map.getCoordinatesService(dropLocation);
+        const liveroute = await map.getDistanceAndTimeService(captaincords, dropLocation);
         if (!liveroute) {
             throw new Error('Route not found');
         }
@@ -170,7 +171,7 @@ export const liveRouteService = async (rideId, captain) => {
         // Emit event with updated ride
         sendMessageToSocket(ride.user.socketId, 'live-route', liveroute);
 
-        return liveroute;
+        return {liveroute, ride};
     } catch (error) {
         throw new Error('Error fetching live route: ' + error.message);
     }

@@ -35,15 +35,17 @@ export const createRide = async (req, res) => {
 
         const captainsInRadius = await getCaptainwithinRadiusService(pickupCoords.lat, pickupCoords.lng, 2000); // Assuming 500 meters radius
 
-        ride.otp=null; // Remove OTP from the response
+        ride.otp = null; // Remove OTP from the response
 
-        const rideWithUser= await Ridemodel.findOne({_id: ride._id}).populate('user');
+        const rideWithUser = await Ridemodel.findOne({ _id: ride._id }).populate('user');
 
-        captainsInRadius.map( async(captain) => {
+        captainsInRadius.map(async (captain) => {
             console.log(`Captain ${captain.name} found within radius:`, captain.location);
             // Here you can emit a socket event to notify the captain about the new ride
-            sendMessageToSocket(captain.socketId, 'new-ride',  rideWithUser);
+            sendMessageToSocket(captain.socketId, 'new-ride', rideWithUser);
+            
         });
+        sendMessage("ride-notification", { count: 1 });
 
     } catch (error) {
         console.error('Create ride error:', error);
@@ -56,7 +58,7 @@ export const createRide = async (req, res) => {
 
 export const getFares = async (req, res) => {
     const errors = validationResult(req);
-     const { pickupLocation, dropLocation } = req.query;
+    const { pickupLocation, dropLocation } = req.query;
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
@@ -64,8 +66,8 @@ export const getFares = async (req, res) => {
         throw new Error('Pickup location and drop location are required');
     }
 
-   try {
-        
+    try {
+
         const fare = await getFare(pickupLocation, dropLocation);
         return res.status(200).json({ fare });
     } catch (error) {
@@ -110,7 +112,7 @@ export const getAvailableRides = async (req, res) => {
             success: true,
             rides
         });
-            sendMessageToSocket(captain.socketId, 'AvailableRides', rides);
+        sendMessageToSocket(captain.socketId, 'AvailableRides', rides);
 
     } catch (error) {
         console.error('Get available rides error:', error);
@@ -125,7 +127,7 @@ export const startRide = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-      const { rideId, otp } = req.query;
+    const { rideId, otp } = req.query;
     try {
         const ride = await startRideService(rideId, otp);
         res.status(200).json({
@@ -158,7 +160,7 @@ export const endRide = async (req, res) => {
             ride
         });
 
-         sendMessageToSocket(ride.user.socketId, 'ride-ended', ride);
+        sendMessageToSocket(ride.user.socketId, 'ride-ended', ride);
 
     } catch (error) {
         console.error('End ride error:', error);
@@ -169,19 +171,21 @@ export const endRide = async (req, res) => {
     }
 }
 
-export const liveRoute= async(req,res)=>{
+export const liveRoute = async (req, res) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { rideId,captainId} = req.body;
+    const { rideId, captainId, dropLocation } = req.body;
+
     try {
-        const ride = await liveRouteService(rideId, captainId);
+        const ride = await liveRouteService(rideId, captainId, dropLocation);
         res.status(200).json({
             success: true,
-            ride
+            ride: ride.liveroute
         });
+        sendMessageToSocket(ride.ride.user.socketId, 'live-route', { ride: ride.liveroute });
 
     } catch (error) {
         console.error('Live route error:', error);

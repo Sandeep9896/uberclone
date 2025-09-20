@@ -4,10 +4,8 @@ import './index.css'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
-import { UserProvider } from '../context/Usercontext';
-import { CaptainProvider } from '../context/CaptainContext.jsx'
-import { SocketProvider } from '../context/SocketContext.jsx'
-import { LocationProvider } from '../context/LocationContext.jsx';
+import { SocketProvider } from './context/SocketContext.jsx'
+import { LocationProvider } from './context/LocationContext.jsx';
 import { Provider } from "react-redux";
 import store from './store/store.js'
 import axios from 'axios';
@@ -28,20 +26,13 @@ axios.interceptors.request.use((config) => {
 });
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <SocketProvider>
-      
-      <CaptainProvider>
-        <UserProvider>
-          <BrowserRouter>
-          <LocationProvider>
-            <Provider store={store}>
-              <App />
-            </Provider>
-            </LocationProvider>
-          </BrowserRouter>
-        </UserProvider>
-      </CaptainProvider>
+      <BrowserRouter>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </BrowserRouter>
     </SocketProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )
