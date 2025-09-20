@@ -1,31 +1,35 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 
-
 export default defineConfig({
-  plugins: [react(), tailwindcss(), visualizer({ open: true })],
+  plugins: [
+    react(), // React + Fast Refresh
+    tailwindcss(), // Tailwind CSS
+    visualizer({ open: true }), // Optional: bundle visualizer
+  ],
+
+  // Prevent multiple React instances
+  resolve: {
+    dedupe: ["react", "react-dom"],
+  },
+
   build: {
     rollupOptions: {
       output: {
-        // manualChunks tells Rollup how to split chunks
+        // Custom chunk splitting
         manualChunks(id) {
-          // 1. All node_modules → vendor
           if (id.includes("node_modules")) {
-            if (id.includes("mapbox-gl")) {
-              // 2. Special case: put mapbox in its own chunk
-              return "mapbox";
-            }
-            if (id.includes("react")) {
-              // Put react + react-dom together
-              return "react";
-            }
-            return "vendor";
+            if (id.includes("mapbox-gl")) return "mapbox"; // Mapbox separate chunk
+            return "vendor"; // all other node_modules
           }
         },
       },
     },
   },
-});
 
+  optimizeDeps: {
+    include: ["react", "react-dom"], // Ensure single React instance at dev time
+  },
+});
