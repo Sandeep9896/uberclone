@@ -22,7 +22,7 @@ app.use((req, res, next) => {
       ok =
         host === 'localhost:5173' ||
         host === 'localhost:4173' ||
-        host === process.env.FRONTEND_URL ||
+        host === (process.env.FRONTEND_URL?.replace(/^https?:\/\//, '')) ||
         /\.devtunnels\.ms$/i.test(host) ||
         /\.ngrok(-free)?\.app$/i.test(host);
     } catch {}
