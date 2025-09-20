@@ -22,7 +22,7 @@ import SearchLocation from './pages/userPages/SearchLocation.jsx'
 import UserLayout from './layout/UserLayout.jsx'
 import UserConfirmRide from './pages/userPages/UserConfirmRide.jsx'
 import Riding from './pages/userPages/Riding.jsx'
-import CaptainLayout from './layout/captainLayout.jsx'
+import CaptainLayout from './layout/CaptainLayout.jsx'
 
 const App = () => {
   const { user, role } = useSelector((state) => state.location?.Auth) || "";
