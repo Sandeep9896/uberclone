@@ -21,7 +21,8 @@ app.use((req, res, next) => {
       const { host } = new URL(origin);
       ok =
         host === 'localhost:5173' ||
-        host === 'localhost:3000' ||
+        host === 'localhost:4173' ||
+        host === process.env.FRONTEND_URL ||
         /\.devtunnels\.ms$/i.test(host) ||
         /\.ngrok(-free)?\.app$/i.test(host);
     } catch {}
