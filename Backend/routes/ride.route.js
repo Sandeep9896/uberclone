@@ -42,5 +42,17 @@ router.post('/live-route',
         authMiddleware.authCaptain,
         body('rideId').notEmpty().withMessage('Ride ID is required'),
     rideController.liveRoute);
-   
+
+ router.post('/submit-rating',
+    authMiddleware.authUser,
+        body('rating').isFloat({ min: 0, max: 5 }).withMessage('Rating must be between 0 and 5'),
+    rideController.submitRating);   
+
+ router.post('/captain-update-stats',
+        authMiddleware.authCaptain,
+        // body('earnings').isFloat({ min: 0 }).withMessage('Earnings must be a positive number'),
+        // body('distance').isFloat({ min: 0 }).withMessage('Distance must be a positive number'),
+        // body('hoursOnline').isFloat({ min: 0 }).withMessage('Hours online must be a positive number'),
+    rideController.updateCaptainStats);
+
 export default router;

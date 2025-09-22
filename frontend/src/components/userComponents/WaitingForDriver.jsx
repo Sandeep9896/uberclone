@@ -13,14 +13,7 @@ const WaitingForDriver = (props) => {
   }, [receiveMessage]);
   return (
     <>
-      <h5
-        onClick={() => {
-          props.setWaitingPanel(false);
-        }}
-        className=' absolute  top-0 text-center w-[93%]  text-3xl' >
-        <RiArrowDownWideLine />
-      </h5>
-      <div className='flex justify-between items-center' >
+      <div className='flex justify-between items-center md:mt-4 md:w-[80%] md:mx-auto' >
         <img className='h-12' src="/images/car.webp" alt="" />
         <div className='text-right px-5'>
           <h2 className='text-lg font-bold'> Driver : {ride?.captain?.fullname?.firstname}</h2>

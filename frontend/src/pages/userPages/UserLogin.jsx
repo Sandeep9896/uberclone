@@ -83,7 +83,7 @@ const UserLogin = () => {
             </form>
             <div className='mt-4  text-center'>
                 <p className='text-gray-600'>Don't have an account? <Link to='/signup' className='text-blue-500'>Sign Up</Link></p>
-                <Link to='/captain-login' className='flex bg-green-300 text-white justify-center py-2 px-4 rounded-md w-full mt-10'>Login as Captain</Link>
+                <Link to='/captain-login' className='flex bg-green-600 text-white justify-center py-2 px-4 rounded-md w-full mt-10'>Login as Captain</Link>
 
             </div>
 

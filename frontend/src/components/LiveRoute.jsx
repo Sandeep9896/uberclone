@@ -102,10 +102,10 @@ export default function LiveRoute({ role, nextStep }) {
 
       {role === "captain" && (
         <div className="h-1/5 p-5 bg-yellow-400 flex relative justify-between items-center">
-          <h4 className="text-xl font-semibold">{distance} km away</h4>
+          <h4 className="text-xl font-semibold">{distance} away</h4>
           <button
             onClick={nextStep}
-            className="bg-green-600 text-white font-semibold rounded-lg px-10 p-3"
+            className="bg-green-600 text-white font-semibold rounded-lg px-10 p-3 hover:bg-green-700"
           >
             Reached Location
           </button>

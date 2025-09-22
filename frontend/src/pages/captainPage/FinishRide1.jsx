@@ -49,7 +49,7 @@ const FinishRide = () => {
                         onClick={() => {
                             setFinishRidePanel(true);
                         }}
-                     className=' bg-green-600 text-white font-semibold rounded-lg px-10 p-3' >Complete Ride</button>
+                     className=' bg-green-600 text-white font-semibold rounded-lg px-10 p-3 hover:bg-green-700 transition'>Complete Ride</button>
                 </div>
                 <div ref={finishRidePanelRef}  className='fixed z-10   bottom-0 justify-between bg-white w-full px-3 py-6 pt-12'>
                     <FinishRide rideDetail={rideDetail} setFinishRidePanel={setFinishRidePanel} />

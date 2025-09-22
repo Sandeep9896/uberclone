@@ -46,7 +46,7 @@ export const generateOTP = async (num) => {
 
 export const createRideService = async (pickupLocation, dropLocation, userId, vehicleType) => {
     console.log("Creating ride with pickup:", pickupLocation, "drop:", dropLocation, "userId:", userId, "vehicleType:", vehicleType);
-    const { distanceKm, durationFormatted } = await map.getDistanceAndTimeService(pickupLocation, dropLocation);
+    const { distanceKm, durationFormatted,duration } = await map.getDistanceAndTimeService(pickupLocation, dropLocation);
 
     try {
         if (!pickupLocation || !dropLocation || !userId || !vehicleType) {
@@ -67,6 +67,7 @@ export const createRideService = async (pickupLocation, dropLocation, userId, ve
             vehicleType: vehicleType,
             distance: distanceKm,
             duration: durationFormatted,
+            durationInSeconds: duration
         });
         return newRide;
     } catch (error) {

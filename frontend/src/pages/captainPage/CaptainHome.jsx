@@ -153,17 +153,17 @@ const CaptainHome = () => {
 
 
   return (
-    <div className="h-screen w-full relative">
+    <div className="h-screen w-full relative md:flex md:flex-row md:justify-between md:gap-1 bg-gray-100">
 
       {/* Map section */}
       <Suspense fallback={<div>Loading map...</div>}>
-        <div className="h-3/5 relative z-0">
+        <div className="h-3/5 md:h-[80vh] md:w-[80%] md:my-10 m-auto relative z-0  ">
           <LiveLocation coords={captainLocation} />
         </div>
       </Suspense>
 
       {/* Bottom details */}
-      <div className="h-2/5 relative z-10 p-5 bg-white shadow-xl">
+      <div className="h-2/5 relative z-10 p-5 bg-white shadow-xl  md:w-[80%] md:h-[70vh] md:my-10 md:mx-auto">
         <CaptainDetail
           AvailableRide={AvailableRide}
           setAvailableRidePanel={setAvailableRidePanel}
@@ -174,7 +174,7 @@ const CaptainHome = () => {
       {AvailableRidepanel && (
         <div
           ref={AvailableRidesRef}
-          className="absolute z-30 overflow-y-auto top-20 bg-white w-full h-fit px-3 py-6 pt-12 shadow-lg"
+          className="absolute z-30 overflow-y-auto top-20 bg-white w-full h-fit px-3 py-6 pt-12 shadow-lg md:w-[80%] md:left-1/2 md:-translate-x-1/2"
         >
           <AvailableRides
             handleRideSelect={handleRideSelect}
@@ -189,11 +189,11 @@ const CaptainHome = () => {
       {/* Ride popup */}
       <div
         ref={ridePopPanelRef}
-        className="fixed z-30 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12 shadow-2xl"
+        className="fixed z-30 bottom-0 translate-y-full bg-white w-full px-3 py-6 pt-12 shadow-2xl md:w-[70%] md:mx-[280px]"
       >
         <h5
           onClick={AvailableRide}
-           className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 shadow transition"
+           className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 shadow transition md:w-[80%]"
         >
           <RiArrowDownWideLine />
         </h5>

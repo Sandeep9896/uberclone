@@ -1,11 +1,12 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, lazy, Suspense, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import gsap from 'gsap';
 
-// Lazy load components for code splitting
-const LiveLocation = lazy(() => import('../../components/LiveLocation'));
+// Lazy load components
 const VehiclePanel = lazy(() => import('../../components/userComponents/VehiclePanel'));
 const ConfirmRide = lazy(() => import('../../components/userComponents/ConfirmRide'));
 const LookingForDiver = lazy(() => import('../../components/userComponents/LookingForDiver'));
+
 
 const UserConfirmRide = () => {
     const vehicleImage = useSelector((state) => state.ride.vehicleImage);
@@ -13,15 +14,32 @@ const UserConfirmRide = () => {
     const pickupLocation = useSelector((state) => state.ride.pickupLocation);
     const dropLocation = useSelector((state) => state.ride.dropLocation);
     const fareDetails = useSelector((state) => state.ride.fareDetail);
-    const userLocation = useSelector((state) => state.location.userLocation);
 
-    const [step, setStep] = useState(0);
+    // Load step from localStorage, default = 0
+    const [step, setStep] = useState(() => {
+        const savedStep = localStorage.getItem("confirmRideStep");
+        return savedStep ? parseInt(savedStep, 10) : 0;
+    });
+
+    const containerRef = useRef(null);
+
+    // Save step in localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem("confirmRideStep", step);
+    }, [step]);
+    useEffect(() => {
+        return () => {
+            localStorage.setItem("confirmRideStep", 0);
+        };
+    }, []);
+
     const nextStep = () => setStep((prev) => prev + 1);
     const prevStep = () => setStep((prev) => prev - 1);
 
     const steps = [
-        <VehiclePanel nextStep={nextStep} />,
+        <VehiclePanel key="vehicle" nextStep={nextStep} />,
         <ConfirmRide
+            key="confirm"
             nextStep={nextStep}
             prevStep={prevStep}
             vehicleImage={vehicleImage}
@@ -31,26 +49,33 @@ const UserConfirmRide = () => {
             fare={fareDetails}
         />,
         <LookingForDiver
+            key="looking"
             vehicleImage={vehicleImage}
             vehicleType={vehicleType}
             pickupLocation={pickupLocation}
             dropLocation={dropLocation}
             fare={fareDetails}
-        />
+        />,
     ];
 
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <div>
-                <div className='h-[30vh]'>
-                    <LiveLocation coords={userLocation} />
-                </div>
-                <div className='h-[40vh]'>
-                    {steps[step]}
-                </div>
-            </div>
-        </Suspense>
-    )
-}
+    // GSAP Animation when step changes
+    useEffect(() => {
+        if (containerRef.current) {
+            gsap.fromTo(
+                containerRef.current,
+                { opacity: 0, y: 40 },
+                { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+            );
+        }
+    }, [step]);
 
-export default UserConfirmRide
+    return (
+
+            <div ref={containerRef} className="h-full p-5 ">
+                {steps[step]}
+            </div>
+
+    );
+};
+
+export default UserConfirmRide;

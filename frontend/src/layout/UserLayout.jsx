@@ -1,11 +1,25 @@
 // layouts/UserLayout.jsx
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import LiveLocation from "../components/LiveLocation";
+import { useSelector } from "react-redux";
 import Footer from "../components/Footer";
 
 export default function UserLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const userLocation = useSelector((state) => state.location.userLocation);
+  const location = useLocation();
+  const mapHeights = {
+    "/user/home": "h-[65vh] ",
+    "/user/rides": "h-1/4",
+    "/user/profile": "h-1/2",
+    "/user/confirm-ride": "h-[40vh]",
+    "/user/riding": "hidden",
+    "/user/search-Location": "hidden md:block",
+  };
+
+  const mapClass = mapHeights[location.pathname] || "h-1/3";
+
 
   return (
     <div className="flex flex-col h-screen overflow-hidden box-border">
@@ -17,8 +31,6 @@ export default function UserLayout() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6">
           <Link to="/user/home" className="hover:text-gray-300">Home</Link>
-          <Link to="/user/rides" className="hover:text-gray-300">Rides</Link>
-          <Link to="/user/profile" className="hover:text-gray-300">Profile</Link>
           <Link to="/user/logout" className="hover:text-gray-300">Logout</Link>
         </nav>
 
@@ -46,19 +58,23 @@ export default function UserLayout() {
         {menuOpen && (
           <div className="absolute top-14 right-4 bg-black text-white rounded-lg shadow-lg p-4 flex flex-col space-y-3 md:hidden">
             <Link to="/user/home" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link to="/user/rides" onClick={() => setMenuOpen(false)}>Rides</Link>
-            <Link to="/user/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
             <Link to="/user/logout" onClick={() => setMenuOpen(false)}>Logout</Link>
           </div>
         )}
       </header>
       {/* Live Location */}
-      {/* Main Content */}
-      <main className="flex-1 bg-gray-100">
-        <Outlet />
-      </main>
+      <div className="md:flex  md:flex-row md:h-full">
+        {/* Left Column (Map) */}
+        <div className={`md:w-1/2 h-64 md:h-auto md:m-2 ${mapClass}`}>
+          <LiveLocation coords={userLocation} />
+        </div>
 
-      <Footer/>
+        {/* Right Column (Main Content) */}
+        <main className="flex-1 bg-gray-100">
+          <Outlet />
+        </main>
+      </div>
+      <Footer />
     </div>
   );
 }

@@ -65,10 +65,10 @@ const RidePopUp = (props) => {
             onClick={() => {
               Navigate('/captain/home');
             }}
-            className=' bg-gray-300 text gray-700  font-semibold rounded-lg px-10 p-2'>ignore</button>
+            className=' bg-gray-300 text gray-700  font-semibold rounded-lg px-10 p-2 hover:bg-gray-400'>ignore</button>
           <button
             onClick={handler}
-            className=' bg-green-600 text-white font-semibold rounded-lg px-10 p-2'>Accept</button>
+            className=' bg-green-600 text-white font-semibold rounded-lg px-10 p-2 hover:bg-green-700 transition'>Accept</button>
 
         </div>
       </div>

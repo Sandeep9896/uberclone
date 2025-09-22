@@ -33,14 +33,17 @@ const Riding = () => {
     ];
 
     return (
+          <div className="md:flex  md:flex-row md:min-h-[80vh]  ">
         <Suspense fallback={<div>Loading...</div>}>
-            <div className="w-full h-[40vh] rounded-2xl">
+            <div className="w-full h-[40vh] md:h-[80vh] rounded-2xl">
                 <LiveRoute role="user" />
             </div>
-            <div className="w-full mt-5 h-[50vh]">
+            <div className="w-full mt-5 md:h-full h-[50vh]">
                 {steps[step]}
             </div>
         </Suspense>
+        </div>
+        
     );
 };
 

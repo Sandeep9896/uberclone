@@ -24,7 +24,7 @@ const ConfirmRide = (props) => {
         }
       };
     return (
-        <>
+         <div className='md:flex-row md:min-h-[80vh] md:w-[60%] mx-auto md:mt-10 -mt-5'>
             <h3 className='text-2xl font-bold mb-5' >Confirm Your Ride</h3>
             <div className='flex justify-between items-center flex-col h-1/3 ' >
                 <img className='h-18 w-20' src={props.vehicleImage} alt="ddd" />
@@ -49,7 +49,7 @@ const ConfirmRide = (props) => {
                         <RiCurrencyLine className="text-2xl" />
                         <div>
                             <h3 className='text-lg font-medium'>{props.fare?.[props.vehicleType]}</h3>
-                            <p className='text-sm -mt-1'>cash cash</p>
+                            <p className='text-sm -mt-1'>Fare</p>
                         </div>
                     </div>
 
@@ -59,9 +59,9 @@ const ConfirmRide = (props) => {
                         await createRide();
                         props.nextStep();
                     }
-                } className='w-full mt-5 bg-green-600 rounded-lg p-2'>Confirm Ride</button>
+                } className='w-full mt-5 bg-green-600 rounded-lg p-2 hover:bg-green-700 transition cursor-pointer'>Confirm Ride</button>
             </div>
-        </>
+        </div>
     )
 }
 

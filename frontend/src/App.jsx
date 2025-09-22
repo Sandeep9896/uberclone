@@ -14,8 +14,8 @@ import CaptainLogout from './pages/captainPage/CaptainLogout.jsx'
 // import CaptainRiding from './pages/captainPage/FinishRide1.jsx'
 import CaptainRiding from './pages/captainPage/CaptainRiding.jsx'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCaptainLocation, setUserLocation, setWatchId } from './slices/locationSlice.js'
-import { startLocationWatcher, stopLocationWatcher } from './utils/locationWatcher.jsx'
+import { setCaptainLocation, setUserLocation, setWatchId,setLiveRoute } from './slices/locationSlice.js'
+import { startLocationWatcher, } from './utils/locationWatcher.jsx'
 import { SocketContext } from './context/SocketContext.jsx'
 import { useEffect } from 'react'
 import SearchLocation from './pages/userPages/SearchLocation.jsx'
@@ -30,6 +30,11 @@ const App = () => {
   const { socket, sendMessage, receiveMessage } = React.useContext(SocketContext);
   const dispatch = useDispatch();
   useEffect(() => {
+    // Live Route event
+    const unsubscribeLive = receiveMessage("live-route", (data) => {
+      dispatch(setLiveRoute(data));
+    });
+
     if (user) {
       const watchId = startLocationWatcher({
         userType: role,
@@ -50,6 +55,10 @@ const App = () => {
       }
       )
       dispatch(setWatchId(watchId));
+    }
+
+    return () => {
+      unsubscribeLive();  
     }
 
   }, [user, role, sendMessage]);
@@ -102,14 +111,7 @@ const App = () => {
           <Route path="logout" element={<CaptainProtectwrapper><CaptainLogout /></CaptainProtectwrapper>} />
         </Route>
 
-        <Route path="/captain-home" element={
-          <CaptainProtectwrapper>
-            <CaptainHome />
-          </CaptainProtectwrapper>} />
-        <Route path="/captains/logout" element={
-          <CaptainProtectwrapper>
-            <CaptainLogout />
-          </CaptainProtectwrapper>} />
+
       </Routes>
 
 

@@ -37,12 +37,7 @@ const VehiclePanel = (props) => {
     if (error) return <div>{error}</div>;
 
     return (
-        <>
-            <h5
-                onClick={() => props.setvehiclePanel(false)}
-                className='absolute top-0 text-center w-[93%] text-3xl'>
-                <RiArrowDownWideLine />
-            </h5>
+        <div className='md:flex-row md:min-h-[80vh] md:w-[60%] mx-auto  '>
             <h3 className='text-2xl font-bold mb-5'>Choose a vehicle</h3>
             {vehicles.map((v, idx) => (
                 <div
@@ -66,7 +61,7 @@ const VehiclePanel = (props) => {
                     <h2 className='text-lg font-semibold'>₹{v.price}</h2>
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

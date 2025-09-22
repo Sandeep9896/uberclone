@@ -128,7 +128,6 @@ export const initSocket = (httpServer, opts = {}) => {
                     { $set: { status: 'completed' } },
                     { new: true }
                 ).populate('user').populate('captain');
-                console.log("helooooooooooooooooooooooooooooooooo", ride);
                 io.to(ride.user.socketId).emit('send_payment_success', ride);
                 io.to(ride.captain.socketId).emit('send_payment_success', ride);
             } catch (error) {

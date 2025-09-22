@@ -43,7 +43,7 @@ export const createRide = async (req, res) => {
             console.log(`Captain ${captain.name} found within radius:`, captain.location);
             // Here you can emit a socket event to notify the captain about the new ride
             sendMessageToSocket(captain.socketId, 'new-ride', rideWithUser);
-            
+
         });
         sendMessage("ride-notification", { count: 1 });
 
@@ -189,6 +189,74 @@ export const liveRoute = async (req, res) => {
 
     } catch (error) {
         console.error('Live route error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Something went wrong!'
+        });
+    }
+}
+
+// Submit Rating
+export const submitRating = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { captainId, rating, comment } = req.body;
+    const userId = req.user; // Assuming user is authenticated
+    console.log("hhhhhhhhhhhhhh",captainId, userId, rating, comment);
+    if (!captainId) {
+        return res.status(401).json({ message: "Captain not authenticated" });
+    }
+    try {
+        const captain = await captainModel.findById(captainId);
+        if (!captain) return res.status(404).json({ message: "Captain not found" });
+
+        // Add feedback
+        captain.rating.feedbacks.push({ userId, rating, comment });
+
+        // Update total rating
+        captain.rating.totalRating =
+            ((captain.rating.totalRating * captain.rating.ratingCount) + rating) /
+            (captain.rating.ratingCount + 1);
+        captain.rating.ratingCount += 1;
+
+        await captain.save();
+        res.status(200).json({
+            success: true,
+        });
+    } catch (error) {
+        console.error('Submit rating error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Something went wrong!'
+        });
+    }
+}
+
+export const updateCaptainStats = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const {  earnings, distance,hoursOnline } = req.body;
+    console.log("helooooooooooooo",earnings, distance,hoursOnline);
+    try {
+        const captain = await captainModel.findById(req.captain);
+        if (!captain) return res.status(404).json({ message: "Captain not found" });
+
+        // Update captain stats
+        captain.earnings += earnings;
+        captain.distanceCovered += distance;
+        captain.hoursOnline += hoursOnline; // Assuming this endpoint is called every minute
+
+        await captain.save();
+        res.status(200).json({
+            success: true,
+        });
+    } catch (error) {
+        console.error('Update captain stats error:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Something went wrong!'

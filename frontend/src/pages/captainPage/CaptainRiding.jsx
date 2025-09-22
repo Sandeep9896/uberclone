@@ -18,7 +18,7 @@ const CaptainRiding = () => {
 
     return (
     <Suspense fallback={<div>Loading...</div>}> 
-            <div className='h-[70vh] bg-gray-100 shadow-xl mx-3'>
+            <div className='h-[80%]  '>
                 {steps[step]}
             </div>
         </Suspense>

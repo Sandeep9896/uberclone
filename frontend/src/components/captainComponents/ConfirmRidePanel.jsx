@@ -52,15 +52,8 @@ const ConfirmRidePanel = (props) => {
   };
 
   return (
-    <div>
-      <h5
-        onClick={() => {
-
-        }
-        }
-        className=' absolute  top-0 text-center w-[93%]  text-3xl' >
-        <RiArrowDownWideLine />
-      </h5>
+    <div className='md:w-3xl md:m-auto md:p-10 rounded-2xl md:-mt-20  '>
+     
       <h3 className='text-2xl font-bold mb-5' >Confirm this ride to start</h3>
       <div className='flex justify-between items-center mt-4 p-2 rounded-lg bg-yellow-500'>
         <div className='flex justify-between items-center gap-3'>
@@ -110,7 +103,7 @@ const ConfirmRidePanel = (props) => {
               onClick={(e) => {
                 submitHandler(e);
               }}
-              className='w-full  text-center bg-green-600 text-white font-semibold rounded-lg p-3'>Confirm</button>
+              className='w-full  text-center bg-green-600 text-white font-semibold rounded-lg p-3 hover:bg-green-700 transition'>Confirm</button>
             <button
               onClick={() => {
                 navigate('/captain/home');

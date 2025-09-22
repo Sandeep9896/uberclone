@@ -83,7 +83,19 @@ const captainSchema = new mongoose.Schema({
     distanceCovered: {
         type: Number,
         default: 0, // Default distance covered to 0
-    }
+    },
+    rating: {
+    totalRating: { type: Number, default: 0 },
+    ratingCount: { type: Number, default: 0 },
+    feedbacks: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        rating: Number,
+        comment: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+  },
 });
  
 captainSchema.index({ location: '2dsphere' }); 

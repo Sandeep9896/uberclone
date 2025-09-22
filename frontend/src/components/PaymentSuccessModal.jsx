@@ -39,7 +39,7 @@ const [countdown, setCountdown] = React.useState(10);
         <button
           onClick={() => {
             if (onClose) onClose();
-            navigate(`/${role}/home`);
+            window.location.href = `/${role}/home`;
           }}
           className="mt-6 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
         >
