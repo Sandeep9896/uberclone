@@ -67,12 +67,13 @@ const CaptainSignup = () => {
 
     return (
 
-        <div className='p-7 h-screen flex flex-col  bg-gray-100'>
-            <img className=' w-16 mb-2 ' src="images\uberdriver.png" alt="" />
+        <div className='p-7 h-screen flex flex-col  bg-gray-100  '>
+            <img className=' w-16 mb-2  ' src="images\uberdriver.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e)
             }
-            }>
+            } 
+            className='md:w-[50%] md:m-auto justify-center md:p-20 md:p-2'>
                 <h3 className='text-base font-medium mb-2'>What's ours Captain Name</h3>
                 {/* email input field */}
                 <div className='flex gap-4 mb-2'>

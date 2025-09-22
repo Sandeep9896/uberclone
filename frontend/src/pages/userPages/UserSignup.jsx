@@ -49,12 +49,13 @@ const UserSignup = () => {
 
     return (
 
-        <div className='p-7 h-screen flex flex-col  bg-gray-100'>
+        <div className='p-7 h-screen flex flex-col  bg-gray-100  '>
             <img className=' w-16 mb-10 ' src="images\uber.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e, email, password)
             }
-            }>
+            }
+                className='md:w-[50%] md:m-auto md:justify-center md:p-20 md:p-2'>
                 <h3 className='text-base font-medium mb-2'>What's yours Name</h3>
                 {/* email input field */}
                 <div className='flex gap-4 mb-4'>

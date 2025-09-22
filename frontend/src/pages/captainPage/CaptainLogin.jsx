@@ -51,12 +51,13 @@ const CaptainLogin = () => {
     }
 
     return (
-        <div className='p-7 h-screen flex flex-col  bg-gray-100'>
+        <div className='p-7 h-screen flex flex-col  bg-gray-100 '>
             <img className=' w-16 mb-10 ' src="images\uberdriver.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e, email, password)
             }
-            }>
+            }
+            className='md:w-[50%] md:m-auto justify-center md:p-20 md:p-2'>
                 <h3 className='text-xl mb-2'> Email </h3>
                 {/* email input field */}
                 <input

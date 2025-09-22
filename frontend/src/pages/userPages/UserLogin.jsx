@@ -53,12 +53,13 @@ const UserLogin = () => {
     }
 
     return (
-        <div className='p-7 h-screen flex flex-col  bg-gray-100'>
+        <div className='p-7 h-screen flex flex-col  bg-gray-100 '>
             <img className=' w-16 mb-10 ' src="images\uber.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e, email, password)
             }
-            }>
+            }
+                className='md:w-[50%] md:m-auto md:justify-center md:p-20 md:p-2'>
                 <h3 className='text-xl mb-2'>What's yours Email</h3>
                 {/* email input field */}
                 <input
@@ -81,7 +82,7 @@ const UserLogin = () => {
                 <button className='bg-black text-white py-2 px-4 rounded-md w-full'>Login</button>
 
             </form>
-            <div className='mt-4  text-center'>
+            <div className='mt-4 mx-auto text-center'>
                 <p className='text-gray-600'>Don't have an account? <Link to='/signup' className='text-blue-500'>Sign Up</Link></p>
                 <Link to='/captain-login' className='flex bg-green-600 text-white justify-center py-2 px-4 rounded-md w-full mt-10'>Login as Captain</Link>
 
