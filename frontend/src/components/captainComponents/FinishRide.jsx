@@ -75,7 +75,7 @@ const FinishRide = () => {
         isOpen={showModal}
         onClose={() => {
           setShowModal(false);
-          navigate('/captain/home');
+          window.location.href = '/captain/home';
         }}
       />
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { SocketContext } from '../../context/SocketContext.jsx';
 import CheckoutRazorpay from '../../paymentGateway/CheckoutRazorpay.jsx';
@@ -33,11 +33,13 @@ const RideEnd = () => {
 
 
     return (
-        <div className='h-screen w-full md:w-[80%]  md:mx-auto  ' >
+        <div className='md:h-screen w-full md:w-[80%]  md:mx-auto  ' >
             <div className='h-1/2 p-5'>
                 <RatingModal
                     isOpen={modalOpen}
-                    onClose={() => setModalOpen(false)}
+                    onClose={() => {setModalOpen(false)
+                        Navigate('/user/home')
+                    }}
                     onSubmit={handleSubmitRating}
                 />
                 <div className='flex justify-between items-center' >

@@ -52,6 +52,7 @@ const RatingModal = ({ isOpen, onClose, onSubmit }) => {
         setFeedback("");
         onClose();
         navigate('/user/home');
+ 
     };
 
     if (!isOpen) return null;

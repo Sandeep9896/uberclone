@@ -8,7 +8,7 @@ export default function CaptainLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden box-border">
+    <div className="flex relative flex-col h-screen overflow-hidden box-border">
       {/* Header */}
       <header className="flex justify-between items-center p-4 bg-yellow-400 text-white relative z-5">
         {/* Logo */}
