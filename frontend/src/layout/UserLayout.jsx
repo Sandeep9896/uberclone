@@ -13,7 +13,7 @@ export default function UserLayout() {
     "/user/home": "h-[60vh] ",
     "/user/rides": "h-1/4",
     "/user/profile": "h-1/2",
-    "/user/confirm-ride": "h-[35vh]",
+    "/user/confirm-ride": "h-[35vh] hidden md:block",
     "/user/riding": "hidden",
     "/user/search-Location": "hidden md:block",
   };

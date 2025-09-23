@@ -63,7 +63,8 @@ const RidePopUp = (props) => {
         <div className='flex item-center justify-between w-full mt-5 '>
           <button
             onClick={() => {
-              Navigate('/captain/home');
+              props.setRidePopupPanel(false);
+              props.setAvailableRidePanel(true);
             }}
             className=' bg-gray-300 text gray-700  font-semibold rounded-lg px-10 p-2 hover:bg-gray-400'>ignore</button>
           <button

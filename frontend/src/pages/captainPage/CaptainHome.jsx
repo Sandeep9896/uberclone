@@ -199,6 +199,8 @@ const CaptainHome = () => {
         </h5>
         <RidePopUp
           confirmRide={confirmRide}
+          setRidePopupPanel={setRidePopupPanel}
+          setAvailableRidePanel={setAvailableRidePanel}
         />
       </div>
       {/* {liveRoute && (

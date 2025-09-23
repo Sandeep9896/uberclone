@@ -12,6 +12,7 @@ const RideEnd = () => {
     const location = useLocation();
     const [modalOpen, setModalOpen] = useState(false);
     const rideDetail = useSelector((state) => state.ride.ride);
+    const Navigate = useNavigate();
     console.log(modalOpen);
     const { socket } = useContext(SocketContext);
     const { receiveMessage } = useContext(SocketContext);
