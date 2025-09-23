@@ -22,7 +22,7 @@ export default function UserLayout() {
 
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden box-border">
+    <div className="flex flex-col h-screen overflow-auto box-border">
       {/* Header */}
       <header className="flex justify-between items-center p-4 bg-yellow-400 text-white relative z-5">
         {/* Logo */}
@@ -63,14 +63,14 @@ export default function UserLayout() {
         )}
       </header>
       {/* Live Location */}
-      <div className="md:flex  md:flex-row md:h-full">
+      <div className="md:flex  md:flex-row md:h-full min-h-[100vh]">
         {/* Left Column (Map) */}
         <div className={`md:w-1/2 h-64 md:h-auto md:m-2 ${mapClass}`}>
           <LiveLocation coords={userLocation} />
         </div>
 
         {/* Right Column (Main Content) */}
-        <main className="flex-1 bg-gray-100">
+        <main className="flex-1 bg-gray-100 sm:mb-10">
           <Outlet />
         </main>
       </div>
