@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../slices/userSlice';
 import { useSelector } from 'react-redux';
+import Loader from '../../components/loader';
 const UserLogout = () => {
     
     const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const UserLogout = () => {
         return <Navigate to="/login" replace />;
     }
 
-    return <>Logging out...</>;
+    return <Loader/> ;
 };
 
 export default UserLogout;

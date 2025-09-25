@@ -23,45 +23,49 @@ import UserLayout from './layout/UserLayout.jsx'
 import UserConfirmRide from './pages/userPages/UserConfirmRide.jsx'
 import Riding from './pages/userPages/Riding.jsx'
 import CaptainLayout from './layout/CaptainLayout.jsx'
+import { setAuth } from './slices/locationSlice.js';
 
 const App = () => {
+  useEffect(() => {
+    const saved = localStorage.getItem("auth")
+    dispatch(setAuth(saved ? JSON.parse(saved) : { user: null, role: null }));
+  }, []);
   const { user, role } = useSelector((state) => state.location?.Auth) || "";
-  // const userLocation=useSelector((state) => state.location?.userLocation) || "";
   const { socket, sendMessage, receiveMessage } = React.useContext(SocketContext);
   const dispatch = useDispatch();
   useEffect(() => {
-    // Live Route event
-    const unsubscribeLive = receiveMessage("live-route", (data) => {
-      dispatch(setLiveRoute(data));
-    });
+  if (!user || !role) return;
 
-    if (user) {
-      const watchId = startLocationWatcher({
-        userType: role,
-        userId: user._id,
-        onUpdate: (payload, coords) => {
+  // Live Route listener
+  const unsubscribeLive = receiveMessage("live-route", (data) => {
+    dispatch(setLiveRoute(data));
+  });
 
-          if (role === "user") {
-            sendMessage("update-location-user", payload);
-            dispatch(setUserLocation(coords));
-            // console.log("User live location:", coords);
-          }
-          else if (role === "captain") {
-            sendMessage("update-location-captain", payload);
-            dispatch(setCaptainLocation(coords));
-            // console.log("Captain live location:", coords);
-          }
-        }
+  // Start watching
+  const watchId = startLocationWatcher({
+    userType: role,
+    userId: user._id,
+    onUpdate: (payload, coords) => {
+      if (role === "user") {
+        sendMessage("update-location-user", payload);
+        dispatch(setUserLocation(coords));
+        console.log("User location updated:", role, coords);
+      } else if (role === "captain") {
+        sendMessage("update-location-captain", payload);
+        dispatch(setCaptainLocation(coords));
       }
-      )
-      dispatch(setWatchId(watchId));
-    }
+    },
+  });
 
-    return () => {
-      unsubscribeLive();
-    }
+  dispatch(setWatchId(watchId));
 
-  }, [user, role, sendMessage]);
+  // Cleanup on unmount or user/role change
+  return () => {
+    unsubscribeLive();
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+  };
+}, [user, role, sendMessage, dispatch, receiveMessage]);
+
 
   return (
     <div>
@@ -88,19 +92,15 @@ const App = () => {
           />
 
           <Route
-            path="logout"
-            element={<UserProtectwrapper><UserLogout /></UserProtectwrapper>}
-          />
-
-          <Route
             path="riding"
             element={<UserProtectwrapper><Riding /></UserProtectwrapper>}
           />
           <Route path="/user/search-Location" element={<UserProtectwrapper><SearchLocation /></UserProtectwrapper>} />
 
         </Route>
+
         <Route
-          path="logout"
+          path="/logout"
           element={<UserProtectwrapper><UserLogout /></UserProtectwrapper>}
         />
 

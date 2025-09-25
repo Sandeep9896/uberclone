@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../context/SocketContext';
-import { useDispatch } from 'react-redux';
 import { setUser } from '../../slices/userSlice';
 import axios from 'axios';
+import { useSelector,useDispatch } from 'react-redux';
 
 const UserSignup = () => {
     const [email, setEmail] = useState('');
@@ -11,8 +11,9 @@ const UserSignup = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
-    const { setIsLoggedIn, sendMessage } = useContext(SocketContext); // Check if user is logged in
+    // const { setIsLoggedIn, sendMessage } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
 
 
@@ -34,7 +35,6 @@ const UserSignup = () => {
         if (response.status === 201) {
             // If the registration is successful, set the user context and navigate to home
             dispatch(setUser(response.data.user)); // set user in redux store
-            setIsLoggedIn(true); // Set login state to true
             localStorage.setItem('token', response.data.token); // store token in local storage
             localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.user._id }, role: "user" }));
             navigate('/user/home');
@@ -96,7 +96,7 @@ const UserSignup = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-full mb-4' />
-                <button className='bg-black text-white py-2 px-4 rounded-md w-full'>Create Account</button>
+                <button disabled={isLoggedIn} className='bg-black text-white py-2 px-4 rounded-md w-full'> {!isLoggedIn ? "Create Account" : "Creating..."} </button>
 
             </form>
             <div className='mt-4  text-center'>

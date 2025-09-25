@@ -1,6 +1,8 @@
 import React, { useState, lazy, Suspense, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import gsap from 'gsap';
+import { useDispatch } from 'react-redux';
+import { setPickupLocation, setDropLocation, setFareDetail,setVehicleImage, setVehicleType  } from '../../slices/rideSlice';
 
 // Lazy load components
 const VehiclePanel = lazy(() => import('../../components/userComponents/VehiclePanel'));
@@ -9,11 +11,24 @@ const LookingForDiver = lazy(() => import('../../components/userComponents/Looki
 
 
 const UserConfirmRide = () => {
+    const dispatch = useDispatch();
     const vehicleImage = useSelector((state) => state.ride.vehicleImage);
     const vehicleType = useSelector((state) => state.ride.vehicleType);
     const pickupLocation = useSelector((state) => state.ride.pickupLocation);
     const dropLocation = useSelector((state) => state.ride.dropLocation);
     const fareDetails = useSelector((state) => state.ride.fareDetail);
+
+    useEffect(() => {
+        if (!pickupLocation || !dropLocation || !fareDetails || !vehicleType || !vehicleImage) {
+            const { pickupLocation, dropLocation, fareDetails } = JSON.parse(localStorage.getItem("rideDetail")) || {};
+            const { type, image } = JSON.parse(localStorage.getItem("vehicleDetail")) || {};
+            dispatch(setPickupLocation(pickupLocation));
+            dispatch(setDropLocation(dropLocation));
+            dispatch(setFareDetail(fareDetails));
+            dispatch(setVehicleType(type));
+            dispatch(setVehicleImage(image));
+        }
+    }, []);
 
     // Load step from localStorage, default = 0
     const [step, setStep] = useState(() => {
@@ -71,9 +86,9 @@ const UserConfirmRide = () => {
 
     return (
 
-            <div ref={containerRef} className="h-full p-5 ">
-                {steps[step]}
-            </div>
+        <div ref={containerRef} className="h-full p-5 ">
+            {steps[step]}
+        </div>
 
     );
 };

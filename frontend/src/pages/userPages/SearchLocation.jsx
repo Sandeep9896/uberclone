@@ -1,28 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import debounce from "../../utils/debounce.js"
 import FindRide from '../../components/userComponents/FindRide.jsx';
-import { useState, useCallback } from "react"
 import { useSelector, useDispatch } from 'react-redux';
 import axios from "axios";
 import fetchFare from '../../utils/fetchFare.js';
 import LocationSearchPanel from '../../components/userComponents/LocationSearchPanel.jsx';
 import { useNavigate } from 'react-router-dom';
 import { setFareDetail, setPickupLocation, setDropLocation } from '../../slices/rideSlice.js';
+
 const SearchLocation = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [activeInput, setActiveInput] = useState(null);
+
   const userLocation = useSelector((state) => state.location.userLocation);
   const fareDetails = useSelector((state) => state.ride.fareDetail);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const debouncedPickupHandler = useCallback(
+  useEffect(() => {
+    if (!userLocation || !userLocation.lat || !userLocation.lng) {
+      console.log("No user location yet… waiting");
+    } else {
+      console.log("User location available:", userLocation);
+    }
 
+    localStorage.setItem("rideDetail", JSON.stringify({
+      pickupLocation: pickup,
+      dropLocation: destination,
+      fareDetails: fareDetails
+    }));
+  }, [fareDetails, pickup, destination, userLocation]);
+
+  const debouncedPickupHandler = useCallback(
     debounce(async (value) => {
-    
+      if (!userLocation?.lat || !userLocation?.lng) {
+        console.warn("Skipping pickup search, userLocation not ready");
+        return;
+      }
+
       try {
         const token = localStorage.getItem('token');
         if (token) {
@@ -33,17 +51,22 @@ const SearchLocation = () => {
               headers: { Authorization: `Bearer ${token}` }
             }
           );
-          setPickupSuggestions(response.data.suggestions);
+          setPickupSuggestions(response.data.suggestions || []);
         }
       } catch (error) {
-        console.error("Error fetching pickup suggestions:", error);
+        console.error("Error fetching pickup suggestions:", error.response?.data || error);
       }
     }, 400),
-    []
+    [userLocation]
   );
 
   const debouncedDestinationHandler = useCallback(
     debounce(async (value) => {
+      if (!userLocation?.lat || !userLocation?.lng) {
+        console.warn("Skipping destination search, userLocation not ready");
+        return;
+      }
+
       try {
         const token = localStorage.getItem('token');
         if (token) {
@@ -57,13 +80,13 @@ const SearchLocation = () => {
               }
             }
           );
-          setDestinationSuggestions(response.data.suggestions);
+          setDestinationSuggestions(response.data.suggestions || []);
         }
       } catch (error) {
-        console.error("Error fetching destination suggestions:", error);
+        console.error("Error fetching destination suggestions:", error.response?.data || error);
       }
     }, 400),
-    []
+    [userLocation]
   );
 
   const pickupHandler = (value) => {
@@ -75,6 +98,7 @@ const SearchLocation = () => {
     setDestination(value);
     debouncedDestinationHandler(value);
   };
+
   const findRide = async (e) => {
     e.preventDefault();
     if (!pickup || !destination) {
@@ -86,21 +110,18 @@ const SearchLocation = () => {
       dispatch(setPickupLocation(pickup));
       dispatch(setDropLocation(destination));
       dispatch(setFareDetail(await fetchFare(pickup, destination)));
-      // Navigate to ride options page after setting fare details
       navigate("/user/confirm-ride");
     } catch (error) {
       alert("Route does not exist or is not available");
       setDestination("");
       setPickup("");
-      document.querySelector('input').focus();
+      document.querySelector('input')?.focus();
     }
   };
 
   return (
     <>
-      {/* <div className='h-1/3 ng-white ' > */}
       <FindRide
-
         pickup={pickup}
         destination={destination}
         pickupHandler={pickupHandler}
@@ -108,11 +129,9 @@ const SearchLocation = () => {
         findRide={findRide}
         setActiveInput={setActiveInput}
       />
-      {/* </div> */}
-      <div className=' bg-white h-2/3 '>
 
+      <div className='bg-white h-2/3'>
         <LocationSearchPanel
-          fare={fareDetails}
           suggestions={activeInput === 'pickup' ? pickupSuggestions : destinationSuggestions}
           onSelect={(location) => {
             if (activeInput === 'pickup') {
@@ -124,9 +143,6 @@ const SearchLocation = () => {
             }
           }}
         />
-
-
-
       </div>
     </>
   )

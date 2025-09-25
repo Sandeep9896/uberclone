@@ -3,9 +3,24 @@ import { Outlet, Link } from "react-router-dom";
 import { useState } from "react";
 import LiveLocation from "../components/LiveLocation";
 import Footer from "../components/Footer";
+import { useEffect } from "react";
+import { SocketContext } from "../context/SocketContext";
+import { useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setAuth } from "../slices/locationSlice.js";
 
 export default function CaptainLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { socket, sendMessage } = useContext(SocketContext);
+  const captain = useSelector((state) => state.captain.captain);
+  const dispatch = useDispatch();
+  useEffect(() => {
+
+    sendMessage("join", {
+      userType: "captain",
+      userId: captain?._id,
+    });
+  }, [sendMessage, captain]);
 
   return (
     <div className="flex relative flex-col h-screen overflow-hidden box-border">
@@ -53,7 +68,7 @@ export default function CaptainLayout() {
       <main className="flex-1 bg-gray-100">
         <Outlet />
       </main>
-       <Footer/>
+      <Footer />
     </div>
   );
 }

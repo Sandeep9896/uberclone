@@ -45,6 +45,10 @@ const VehiclePanel = (props) => {
                     onClick={() => {
                         dispatch(setVehicleType(v.type)); // Set the selected vehicle type
                         dispatch(setVehicleImage(v.img)); // Set the selected vehicle image
+                        localStorage.setItem("vehicleDetail", JSON.stringify({
+                            type: v.type,
+                            image: v.img
+                        }));
                         props.nextStep();
                     }}
                     tabIndex={idx}

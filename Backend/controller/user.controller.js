@@ -84,3 +84,9 @@ export const logoutUser = async (req, res, next) => {
 
      return res.status(200).json({ message: 'Logged out successfully' });
 }
+
+export const auth = async (req, res, next) => {
+     return res.status(200).json({
+          message: 'User authenticated successfully'
+     });
+}

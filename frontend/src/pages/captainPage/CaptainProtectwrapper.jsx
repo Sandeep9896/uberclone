@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setCaptain } from '../../slices/captainSlice';
 import { useSelector } from 'react-redux';
+import Loader from '../../components/loader';
 
 const CaptainProtectwrapper = ({ children }) => {
     const dispatch = useDispatch();    
@@ -36,7 +37,7 @@ const CaptainProtectwrapper = ({ children }) => {
     }, [token, setCaptain]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader />;
     }
 
     if(!isLoggedIn || authError) {

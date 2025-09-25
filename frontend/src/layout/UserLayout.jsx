@@ -4,8 +4,14 @@ import { useState } from "react";
 import LiveLocation from "../components/LiveLocation";
 import { useSelector } from "react-redux";
 import Footer from "../components/Footer";
+import { useEffect } from "react";
+import { SocketContext } from "../context/SocketContext";
+import { useContext } from "react";
+import LiveRoute from "../components/LiveRoute";
 
 export default function UserLayout() {
+  const { socket, sendMessage } = useContext(SocketContext);
+  const user = useSelector((state) => state.user.user);
   const [menuOpen, setMenuOpen] = useState(false);
   const userLocation = useSelector((state) => state.location.userLocation);
   const location = useLocation();
@@ -13,12 +19,19 @@ export default function UserLayout() {
     "/user/home": "h-[60vh] ",
     "/user/rides": "h-1/4",
     "/user/profile": "h-1/2",
-    "/user/confirm-ride": "h-[35vh] hidden md:block",
+    "/user/confirm-ride": "h-[35vh] md:block",
     "/user/riding": "hidden",
     "/user/search-Location": "hidden md:block",
   };
 
   const mapClass = mapHeights[location.pathname] || "h-1/3";
+
+  useEffect(() => {
+    if (socket && socket.connected && user) {
+      sendMessage('join', { userType: 'user', userId: user._id });
+    }
+    
+  }, [socket, user]);
 
 
   return (
@@ -31,7 +44,7 @@ export default function UserLayout() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6">
           <Link to="/user/home" className="hover:text-gray-300">Home</Link>
-          <Link to="/user/logout" className="hover:text-gray-300">Logout</Link>
+          <Link to="/logout" className="hover:text-gray-300">Logout</Link>
         </nav>
 
         {/* Mobile Hamburger */}
@@ -58,7 +71,7 @@ export default function UserLayout() {
         {menuOpen && (
           <div className="absolute top-14 right-4 bg-black text-white rounded-lg shadow-lg p-4 flex flex-col space-y-3 md:hidden">
             <Link to="/user/home" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link to="/user/logout" onClick={() => setMenuOpen(false)}>Logout</Link>
+            <Link to="/logout" onClick={() => setMenuOpen(false)}>Logout</Link>
           </div>
         )}
       </header>

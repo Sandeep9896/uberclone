@@ -34,23 +34,15 @@ const CaptainHome = () => {
   const navigate = useNavigate();
 
 
-  useEffect(() => {
 
-    sendMessage("join", {
-      userType: "captain",
-      userId: captain?._id,
-    });
-    const saved = localStorage.getItem("auth")
-    dispatch(setAuth(saved ? JSON.parse(saved) : { user: null, role: null }));
-  }, [sendMessage, captain]);
 
   // available rides
-  useEffect(() => {
-    receiveMessage("AvailableRides", (data) => {
-      console.log("Available rides received:", data);
-      setAvailableRideData(data);
-    });
-  }, [receiveMessage]);
+  // useEffect(() => {
+  //   receiveMessage("AvailableRides", (data) => {
+  //     console.log("Available rides received:", data);
+  //     setAvailableRideData(data);
+  //   });
+  // }, [receiveMessage]);
 
   receiveMessage("new-ride", (data) => {
     dispatch(setRide(data));
@@ -145,6 +137,7 @@ const CaptainHome = () => {
         }
       );
       console.log("Available rides fetched:", res.data);
+      setAvailableRideData(res.data);
     } catch (error) {
       console.error("Error fetching available rides:", error);
     }
@@ -193,7 +186,7 @@ const CaptainHome = () => {
       >
         <h5
           onClick={AvailableRide}
-           className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 shadow transition md:w-[80%]"
+          className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 shadow transition md:w-[80%]"
         >
           <RiArrowDownWideLine />
         </h5>
@@ -203,32 +196,7 @@ const CaptainHome = () => {
           setAvailableRidePanel={setAvailableRidePanel}
         />
       </div>
-      {/* {liveRoute && (
-        <div
-          ref={liveRouteRef}
-          className="fixed z-40 h-screen bottom-0 translate-y-full justify-between bg-white w-full  py-6 pt-12 shadow-2xl"
-        >
-          <LiveRoute
-            liveRoute={liveRoute}
-            setLiveRoutePopup={setLiveRoutePopup}
-            setConfirmRidePopupPanel={setConfirmRidePopupPanel}
-            setRidePopupPanel={setRidePopupPanel}
-          />
-        </div>)
-      } */}
 
-      {/* Confirm ride popup */}
-      {/* <div
-        ref={confirmRidePopupRef}
-        className="fixed z-40 h-screen bottom-0 translate-y-full justify-between bg-white w-full px-3 py-6 pt-12 shadow-2xl"
-      >
-        <ConfirmRidePopUp
-          rideDetail={rideDetail}
-          setConfirmRidePopupPanel={setConfirmRidePopupPanel}
-          setLiveRoutePopup={setLiveRoutePopup}
-          setRidePopupPanel={setRidePopupPanel}
-        />
-      </div> */}
     </div>
   );
 };

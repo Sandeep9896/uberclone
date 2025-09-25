@@ -1,49 +1,52 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../slices/userSlice';
 import axios from 'axios';
-import UserLayout from '../../layout/UserLayout';
+import Loader from '../../components/loader';
 
 const UserProtectwrapper = ({ children }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
     if (!token) {
       setError(true);
       setIsLoading(false);
+      return;
     }
-   axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        dispatch(setUser(response.data.user));
-        setIsLoading(false);
-      }
+
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/auth`, {
+      headers: { Authorization: `Bearer ${token}` }
     })
-    .catch((error) => {
-      console.error("Error fetching user profile:", error);
-      setError(true);
-      setIsLoading(false);
-    });
-  }, [token, setUser]);
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(setUser(response.data.user));
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching user profile:", err);
+        setError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  }, [token, dispatch]);
 
-  if (!isLoggedIn || error) {
+  // Show loader while checking auth
+  if (isLoading) return <Loader />;
+
+  // Redirect if error or not logged in
+  if (error || !isLoggedIn) {
     localStorage.removeItem('token');
     return <Navigate to="/login" replace />;
   }
 
+  // Render protected content
   return children;
 };
 

@@ -14,6 +14,7 @@ const UserLogin = () => {
     const { setIsLoggedIn, sendMessage } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
     const user = useSelector((state) => state.user.user);
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -72,14 +73,14 @@ const UserLogin = () => {
                 />
                 <h3 className='text-xl mb-2'>Password</h3>
                 {/* input password field */}
-                <input
+                <input              
                     type="password"
                     placeholder='Enter your password'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className='border-2 border-gray-300 rounded-md p-2 w-full mb-4' />
-                <button className='bg-black text-white py-2 px-4 rounded-md w-full'>Login</button>
+                <button disabled={isLoggedIn} className='bg-black text-white py-2 px-4 rounded-md w-full'> {!isLoggedIn ? "Login" : "Logging in..."} </button>
 
             </form>
             <div className='mt-4 mx-auto text-center'>
