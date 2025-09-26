@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setCaptain } from '../../slices/captainSlice';
 import { useSelector } from 'react-redux';
-import Loader from '../../components/loader';
+import Loader from '../../components/Loader';
 
 const CaptainProtectwrapper = ({ children }) => {
     const dispatch = useDispatch();    

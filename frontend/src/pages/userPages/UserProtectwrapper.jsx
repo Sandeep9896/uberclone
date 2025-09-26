@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../slices/userSlice';
 import axios from 'axios';
-import Loader from '../../components/loader';
+import Loader from '../../components/Loader';
 
 const UserProtectwrapper = ({ children }) => {
   const dispatch = useDispatch();
