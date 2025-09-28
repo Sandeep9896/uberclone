@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../../slices/userSlice';
 import { useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
+import { stopLocationWatcher } from '../../utils/locationWatcher';
 const UserLogout = () => {
     
     const dispatch = useDispatch();

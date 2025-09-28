@@ -16,6 +16,7 @@ const CaptainSignup = () => {
     const [vehicleCapacity, setVehicleCapacity] = useState('');
     const [vehicleType, setVehicleType] = useState('');
     const [model, setModel] = useState('');
+    const [click, setClick] = useState(false);
 
     const dispatch = useDispatch();
     const { setIsLoggedIn } = useContext(SocketContext); // Check if user is logged in
@@ -41,6 +42,7 @@ const CaptainSignup = () => {
             }
         };
         try {
+            setClick(true);
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/captains/register`, newCaptain);
             if (response.status === 201) {
                 dispatch(setCaptain(response.data.captain));
@@ -51,6 +53,8 @@ const CaptainSignup = () => {
             }
         } catch (error) {
             console.error('Registration failed:', error.response?.data?.message || error.message);
+            alert('Registration failed. Please try again.');
+            setClick(false);
         }
 
         setFirstName('');
@@ -83,6 +87,7 @@ const CaptainSignup = () => {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         required
+                        minLength={3}
                         className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-1/2'
                     />
                     <input
@@ -112,6 +117,7 @@ const CaptainSignup = () => {
                     placeholder='Enter your password'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    minLength={6}
                     required
                     className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-full mb-2' />
                 <h3 className='text-base font-medium mb-2'>Vehicle Details</h3>
@@ -167,7 +173,7 @@ const CaptainSignup = () => {
                         <option value="bike">bike</option>
                         <option value="auto">auto</option>
                     </select></div>
-                <button className='bg-black text-white py-2 px-4 rounded-md w-full'>Create Captain Account</button>
+                <button disabled={click} className='bg-black text-white py-2 px-4 rounded-md w-full'>{click ? 'Creating account...' : 'Create Captain Account'}</button>
 
             </form>
             <div className='mt-4  text-center'>

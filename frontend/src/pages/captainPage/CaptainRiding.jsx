@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 
 // Lazy load components
 const FinishRide = lazy(() => import('../../components/captainComponents/FinishRide'));
@@ -6,7 +6,17 @@ const LiveRoute = lazy(() => import('../../components/LiveRoute'));
 const ConfirmRidePanel = lazy(() => import('../../components/captainComponents/ConfirmRidePanel'));
 
 const CaptainRiding = () => {
-    const [step, setStep] = React.useState(0);
+    // Initialize step from localStorage or default to 0
+    const [step, setStep] = useState(() => {
+        const savedStep = localStorage.getItem('captainRidingStep');
+        return savedStep ? Number(savedStep) : 0;
+    });
+
+    // Update localStorage whenever step changes
+    useEffect(() => {
+        localStorage.setItem('captainRidingStep', step);
+    }, [step]);
+
     const nextStep = () => setStep((prev) => prev + 1);
     const prevStep = () => setStep((prev) => prev - 1);
 
@@ -17,8 +27,8 @@ const CaptainRiding = () => {
     ];
 
     return (
-    <Suspense fallback={<div>Loading...</div>}> 
-            <div className='h-[80%]  '>
+        <Suspense fallback={<div>Loading...</div>}> 
+            <div className='h-[80%]'>
                 {steps[step]}
             </div>
         </Suspense>

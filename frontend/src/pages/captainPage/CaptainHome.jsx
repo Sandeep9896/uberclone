@@ -17,32 +17,17 @@ import { RiArrowDownWideLine, RiMapPin2Fill, RiMapPinUserFill, RiCurrencyLine } 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const ridePopPanelRef = useRef(null);
-  const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
-  const confirmRidePopupRef = useRef(null);
-  const rideDetail = useSelector((state) => state.ride.ride);
   const [AvailableRideData, setAvailableRideData] = useState([]);
   const AvailableRidesRef = useRef(null);
   const [AvailableRidepanel, setAvailableRidePanel] = useState(false);
-  const liveRouteRef = useRef(null);
-  const { sendMessage, receiveMessage, socket } = useContext(SocketContext);
+  const { receiveMessage } = useContext(SocketContext);
   const captain = useSelector((state) => state.captain.captain);
   const captainLocation = useSelector((state) => state.location.captainLocation);
-  const liveRoute = useSelector((state) => state.location.liveRoute);
-  const [liveRoutePopup, setLiveRoutePopup] = useState(false);
   const [alertnotify, setAlertNotify] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
 
-
-
-  // available rides
-  // useEffect(() => {
-  //   receiveMessage("AvailableRides", (data) => {
-  //     console.log("Available rides received:", data);
-  //     setAvailableRideData(data);
-  //   });
-  // }, [receiveMessage]);
 
   receiveMessage("new-ride", (data) => {
     dispatch(setRide(data));
@@ -69,20 +54,6 @@ const CaptainHome = () => {
       });
     }
   }, [AvailableRidepanel]);
-  useGSAP(() => {
-    if (liveRoutePopup) {
-      gsap.to(liveRouteRef.current, {
-        translateY: liveRouteRef.current ? "0" : "100%",
-        minHeight: liveRouteRef.current ? "90vh" : "0",
-      });
-    }
-    else {
-      gsap.to(liveRouteRef.current, {
-        translateY: "100%",
-        minHeight: "0",
-      });
-    }
-  }, [liveRoutePopup]);
 
   useGSAP(() => {
     gsap.to(ridePopPanelRef.current, {
@@ -91,34 +62,13 @@ const CaptainHome = () => {
     });
   }, [ridePopupPanel]);
 
-  useGSAP(() => {
-    gsap.to(confirmRidePopupRef.current, {
-      translateY: confirmRidePopupPanel ? "0" : "100%",
-    });
-  }, [confirmRidePopupPanel]);
-
   const handleRideSelect = (ride) => {
     dispatch(setRide(ride));
     setRidePopupPanel(true);
     setAvailableRidePanel(false);
   };
 
-  const confirmRide = async () => {
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/rides/confirm`,
-        { rideId: rideDetail._id, captainId: captain._id },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      navigate("/captain/rides");
-    } catch (error) {
-      console.error("Error confirming ride:", error);
-    }
-  };
+  
 
   const AvailableRide = async () => {
     setRidePopupPanel(false);
@@ -137,7 +87,7 @@ const CaptainHome = () => {
         }
       );
       console.log("Available rides fetched:", res.data);
-      setAvailableRideData(res.data);
+      setAvailableRideData(res.data.rides);
     } catch (error) {
       console.error("Error fetching available rides:", error);
     }
@@ -174,7 +124,6 @@ const CaptainHome = () => {
             setRidePopupPanel={setRidePopupPanel}
             setAvailableRidePanel={setAvailableRidePanel}
             ride={AvailableRideData}
-            confirmRide={confirmRide}
           />
         </div>
       )}
@@ -186,17 +135,16 @@ const CaptainHome = () => {
       >
         <h5
           onClick={AvailableRide}
-          className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 shadow transition md:w-[80%]"
+           className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 shadow transition md:w-[80%]"
         >
           <RiArrowDownWideLine />
         </h5>
         <RidePopUp
-          confirmRide={confirmRide}
           setRidePopupPanel={setRidePopupPanel}
           setAvailableRidePanel={setAvailableRidePanel}
         />
       </div>
-
+      
     </div>
   );
 };

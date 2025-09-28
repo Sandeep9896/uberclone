@@ -2,28 +2,38 @@ import React from 'react'
 import { SocketContext } from '../../context/SocketContext';
 import { liveLocation } from '../../utils/liveLocation.js';
 import { setLiveRoute } from '../../slices/locationSlice.js';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RiMapPin2Fill, RiMapPinUserFill, RiCurrencyLine } from 'react-icons/ri';
+import axios from 'axios';
 
 const RidePopUp = (props) => {
   // console.log('rideDetail in RidePopUp:', props.rideDetail);
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const captain = useSelector((state) => state.captain.captain);
   const rideDetail = useSelector((state) => state.ride.ride);
   const dispatch = useDispatch();
   const { sendMessage } = React.useContext(SocketContext);
-  const handler = async () => {
-    await props.confirmRide();
+
+  const confirmRide = async () => {
     try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/rides/confirm`,
+        { rideId: rideDetail._id, captainId: captain._id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const response = await liveLocation(rideDetail, captain, rideDetail.pickupLocation);
-      console.log('Live route response:', response);
       dispatch(setLiveRoute(response));
       sendMessage('ride-accepted', { rideId: rideDetail._id, captainId: captain._id });
+      navigate("/captain/rides");
     } catch (error) {
-      console.error('Error in accepting ride:', error);
+      console.error("Error confirming ride:", error);
     }
-  }
+  };
   return (
     <>
       <h3 className='text-2xl font-bold mb-5' >New Ride for you</h3>
@@ -68,7 +78,7 @@ const RidePopUp = (props) => {
             }}
             className=' bg-gray-300 text gray-700  font-semibold rounded-lg px-10 p-2 hover:bg-gray-400'>ignore</button>
           <button
-            onClick={handler}
+            onClick={confirmRide}
             className=' bg-green-600 text-white font-semibold rounded-lg px-10 p-2 hover:bg-green-700 transition'>Accept</button>
 
         </div>

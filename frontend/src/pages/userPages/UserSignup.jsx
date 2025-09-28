@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../context/SocketContext';
 import { setUser } from '../../slices/userSlice';
 import axios from 'axios';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 const UserSignup = () => {
     const [email, setEmail] = useState('');
@@ -12,6 +12,7 @@ const UserSignup = () => {
     const [lastName, setLastName] = useState('');
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    const [click, setClick] = useState(false);
 
     // const { setIsLoggedIn, sendMessage } = useContext(SocketContext); // Check if user is logged in
     const navigate = useNavigate();
@@ -28,22 +29,28 @@ const UserSignup = () => {
             email: email,
             password: password
         };
+        try {
+            setClick(true);
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`, newUser);
 
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`, newUser);
-        console.log(import.meta.env.VITE_BACKEND_URL);
+            if (response.status === 201) {
+                // If the registration is successful, set the user context and navigate to home
+                dispatch(setUser(response.data.user)); // set user in redux store
+                localStorage.setItem('token', response.data.token); // store token in local storage
+                localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.user._id }, role: "user" }));
+                navigate('/user/home');
 
-        if (response.status === 201) {
-            // If the registration is successful, set the user context and navigate to home
-            dispatch(setUser(response.data.user)); // set user in redux store
-            localStorage.setItem('token', response.data.token); // store token in local storage
-            localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.user._id }, role: "user" }));
-            navigate('/user/home');
-
+            }
+        } catch (error) {
+            console.error('Error signing up:', error);
+            alert('Signup failed. Please try again.');
+            setClick(false);
         }
         setFirstName('');
         setLastName('');
         setEmail('');
         setPassword('');
+
     }
 
 
@@ -64,6 +71,7 @@ const UserSignup = () => {
                         placeholder='first Name'
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
+                        minLength={3}
                         required
                         className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-1/2'
                     />
@@ -95,8 +103,9 @@ const UserSignup = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                     className='border-2 bg-[#eeeeee] border-gray-300 rounded-md p-2 w-full mb-4' />
-                <button disabled={isLoggedIn} className='bg-black text-white py-2 px-4 rounded-md w-full'> {!isLoggedIn ? "Create Account" : "Creating..."} </button>
+                <button disabled={click} className='bg-black text-white py-2 px-4 rounded-md w-full'> {click ? "Creating..." : "Create Account"} </button>
 
             </form>
             <div className='mt-4  text-center'>

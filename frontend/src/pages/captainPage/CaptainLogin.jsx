@@ -16,6 +16,7 @@ const CaptainLogin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const captain = useSelector((state) => state.captain.captain);
+    const [click, setClick] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -33,6 +34,7 @@ const CaptainLogin = () => {
         };
 
         try {
+            setClick(true);
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/captains/login`, loginData);
             if (response.status === 200) {
                 dispatch(setCaptain(response.data.captain)); // set captain from backend response
@@ -45,6 +47,7 @@ const CaptainLogin = () => {
         catch (error) {
             console.log('Error logging in:', error);
             alert('Login failed. Please check your credentials.');
+            setClick(false);
         }
         setEmail('');
         setPassword('');
@@ -76,8 +79,9 @@ const CaptainLogin = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                     className='border-2 border-gray-300 rounded-md p-2 w-full mb-4' />
-                <button className='bg-black text-white py-2 px-4 rounded-md w-full'>Login</button>
+                <button disabled={click} className='bg-black text-white py-2 px-4 rounded-md w-full'>{click ? 'Logging in...' : 'Login'}</button>
 
             </form>
             <div className='mt-4 mx-auto text-center'>

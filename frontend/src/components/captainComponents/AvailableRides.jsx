@@ -2,6 +2,7 @@ import React from 'react'
 import { RiArrowDownWideLine } from 'react-icons/ri';
 
 const AvailableRides = (props) => {
+    console.log('AvailableRides props:', props.ride);
     return (
         <>
             <button

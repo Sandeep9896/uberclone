@@ -15,6 +15,7 @@ const UserLogin = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user.user);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    const [click, setClick] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -22,7 +23,7 @@ const UserLogin = () => {
             // If token exists, redirect to user home
             navigate('/user/home');
         }
-    });
+    }, [navigate, user]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -33,6 +34,7 @@ const UserLogin = () => {
         };
 
         try {
+            setClick(true);
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
                 loginData
@@ -47,6 +49,7 @@ const UserLogin = () => {
         } catch (error) {
             console.error('Error logging in:', error);
             alert('Login failed. Please check your credentials.');
+            setClick(false);
         }
 
         setEmail('');
@@ -79,8 +82,9 @@ const UserLogin = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                     className='border-2 border-gray-300 rounded-md p-2 w-full mb-4' />
-                <button disabled={isLoggedIn} className='bg-black text-white py-2 px-4 rounded-md w-full'> {!isLoggedIn ? "Login" : "Logging in..."} </button>
+                <button  disabled={click} className='bg-black text-white py-2 px-4 rounded-md w-full'> {click? "Logging in..." : "Login"} </button>
 
             </form>
             <div className='mt-4 mx-auto text-center'>

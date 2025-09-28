@@ -34,37 +34,37 @@ const App = () => {
   const { socket, sendMessage, receiveMessage } = React.useContext(SocketContext);
   const dispatch = useDispatch();
   useEffect(() => {
-  if (!user || !role) return;
+    if (!user || !role) return;
 
-  // Live Route listener
-  const unsubscribeLive = receiveMessage("live-route", (data) => {
-    dispatch(setLiveRoute(data));
-  });
+    // Live Route listener
+    const unsubscribeLive = receiveMessage("live-route", (data) => {
+      dispatch(setLiveRoute(data));
+    });
 
-  // Start watching
-  const watchId = startLocationWatcher({
-    userType: role,
-    userId: user._id,
-    onUpdate: (payload, coords) => {
-      if (role === "user") {
-        sendMessage("update-location-user", payload);
-        dispatch(setUserLocation(coords));
-        console.log("User location updated:", role, coords);
-      } else if (role === "captain") {
-        sendMessage("update-location-captain", payload);
-        dispatch(setCaptainLocation(coords));
-      }
-    },
-  });
+    // Start watching
+    const watchId = startLocationWatcher({
+      userType: role,
+      userId: user._id,
+      onUpdate: (payload, coords) => {
+        if (role === "user") {
+          sendMessage("update-location-user", payload);
+          dispatch(setUserLocation(coords));
+          console.log("User location updated:", role, coords);
+        } else if (role === "captain") {
+          sendMessage("update-location-captain", payload);
+          dispatch(setCaptainLocation(coords));
+        }
+      },
+    });
 
-  dispatch(setWatchId(watchId));
+    dispatch(setWatchId(watchId));
 
-  // Cleanup on unmount or user/role change
-  return () => {
-    unsubscribeLive();
-    if (watchId) navigator.geolocation.clearWatch(watchId);
-  };
-}, [user, role, sendMessage, dispatch, receiveMessage]);
+    // Cleanup on unmount or user/role change
+    return () => {
+      unsubscribeLive();
+      if (watchId) navigator.geolocation.clearWatch(watchId);
+    };
+  }, [user, role, sendMessage, dispatch, receiveMessage]);
 
 
   return (
@@ -73,43 +73,22 @@ const App = () => {
         <Route path="/" element={<Start />} />
         <Route path="/login" element={<UserLogin />} />
         <Route path="/signup" element={<UserSignup />} />
+        <Route path="/user" element={<UserLayout />}>
+          <Route path="home" element={<UserProtectwrapper><Home /></UserProtectwrapper>} />
+          <Route path="search-Location" element={<UserProtectwrapper><SearchLocation /></UserProtectwrapper>} />
+          <Route path="confirm-Ride" element={<UserProtectwrapper><UserConfirmRide /></UserProtectwrapper>} />
+          <Route path="riding" element={<UserProtectwrapper><Riding /></UserProtectwrapper>} />
+        </Route>
+        <Route path="/logout" element={<UserProtectwrapper><UserLogout /></UserProtectwrapper>} />
 
+        {/* Captain Routes */}
         <Route path="/captain-login" element={<CaptainLogin />} />
         <Route path="/captain-signup" element={<CaptainSignup />} />
-        <Route path="/captain-ride" element={<CaptainRiding />} />
-        <Route path="/user" element={<UserLayout />}>
-          <Route
-            path="home"
-            element={<UserProtectwrapper><Home /></UserProtectwrapper>}
-          />
-          <Route
-            path="search-location"
-            element={<SearchLocation />}
-          />
-          <Route
-            path="confirm-Ride"
-            element={<UserProtectwrapper><UserConfirmRide /></UserProtectwrapper>}
-          />
-
-          <Route
-            path="riding"
-            element={<UserProtectwrapper><Riding /></UserProtectwrapper>}
-          />
-          <Route path="/user/search-Location" element={<UserProtectwrapper><SearchLocation /></UserProtectwrapper>} />
-
-        </Route>
-
-        <Route
-          path="/logout"
-          element={<UserProtectwrapper><UserLogout /></UserProtectwrapper>}
-        />
-
-
         <Route path="/captain" element={<CaptainLayout />} >
           <Route path="home" element={<CaptainProtectwrapper><CaptainHome /></CaptainProtectwrapper>} />
           <Route path="rides" element={<CaptainProtectwrapper><CaptainRiding /></CaptainProtectwrapper>} />
-          <Route path="logout" element={<CaptainProtectwrapper><CaptainLogout /></CaptainProtectwrapper>} />
         </Route>
+        <Route path="/captain/logout" element={<CaptainProtectwrapper><CaptainLogout /></CaptainProtectwrapper>} />
 
 
       </Routes>
