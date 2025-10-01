@@ -106,7 +106,7 @@ export default function Loader({ show = true, background = "bg-white" }) {
           </svg>
 
           {/* Logo center (simple shape) */}
-          <div
+          {/* <div
             ref={logoRef}
             className="relative m-auto w-20 h-20 rounded-full flex items-center justify-center shadow-2xl"
             aria-hidden
@@ -126,7 +126,7 @@ export default function Loader({ show = true, background = "bg-white" }) {
                 />
               </svg>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Text + animated dots */}

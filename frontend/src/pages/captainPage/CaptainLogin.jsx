@@ -7,6 +7,8 @@ import { useDispatch } from 'react-redux';
 import { setCaptain } from '../../slices/captainSlice.js';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import LoginLoading from '../../components/logiinLoading.jsx';
+import LoginFailedModal from '../../components/LoginFailed.jsx';
 
 const CaptainLogin = () => {
 
@@ -17,6 +19,7 @@ const CaptainLogin = () => {
     const dispatch = useDispatch();
     const captain = useSelector((state) => state.captain.captain);
     const [click, setClick] = useState(false);
+    const [showLoginFailed, setShowLoginFailed] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -46,8 +49,8 @@ const CaptainLogin = () => {
         }
         catch (error) {
             console.log('Error logging in:', error);
-            alert('Login failed. Please check your credentials.');
             setClick(false);
+            setShowLoginFailed(true);
         }
         setEmail('');
         setPassword('');
@@ -55,6 +58,8 @@ const CaptainLogin = () => {
 
     return (
         <div className='p-7 h-screen flex flex-col  bg-gray-100 '>
+            {click && <LoginLoading />}
+            {showLoginFailed && ( <LoginFailedModal onClose={() => setShowLoginFailed(false)} /> )}
             <img className=' w-16 mb-10 ' src="images\uberdriver.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e, email, password)

@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setCaptain } from '../../slices/captainSlice.js';
 import { SocketContext } from '../../context/SocketContext.jsx';
 import axios from 'axios';
+import LoginLoading from '../../components/logiinLoading.jsx';
 const CaptainSignup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -72,6 +73,7 @@ const CaptainSignup = () => {
     return (
 
         <div className='p-7 h-screen flex flex-col  bg-gray-100  '>
+            {click && <LoginLoading />}
             <img className=' w-16 mb-2  ' src="images\uberdriver.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e)

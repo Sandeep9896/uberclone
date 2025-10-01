@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../../slices/userSlice.js';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import LoginLoading from '../../components/logiinLoading.jsx';
+import LoginFailedModal from '../../components/LoginFailed.jsx';
 
 const UserLogin = () => {
     const [email, setEmail] = useState('');
@@ -16,6 +18,7 @@ const UserLogin = () => {
     const user = useSelector((state) => state.user.user);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     const [click, setClick] = useState(false);
+    const [showLoginFailed, setShowLoginFailed] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -48,8 +51,9 @@ const UserLogin = () => {
             }
         } catch (error) {
             console.error('Error logging in:', error);
-            alert('Login failed. Please check your credentials.');
             setClick(false);
+            // alert('Login failed. Please check your credentials.');
+            setShowLoginFailed(true);
         }
 
         setEmail('');
@@ -58,6 +62,10 @@ const UserLogin = () => {
 
     return (
         <div className='p-7 h-screen flex flex-col  bg-gray-100 '>
+            {click && <LoginLoading />}
+            {showLoginFailed && ( <LoginFailedModal onClose={() => setShowLoginFailed(false)} /> )}
+
+
             <img className=' w-16 mb-10 ' src="images\uber.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e, email, password)

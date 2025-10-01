@@ -22,9 +22,12 @@ const home = () => {
 
 
   return (
+    <div className=' w-full h-full ' >
+
     <div className='w-full h-full flex flex-col'>
       <FindRide
       />
+    </div>
     </div>
   )
 }

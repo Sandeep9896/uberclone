@@ -4,6 +4,7 @@ import { SocketContext } from '../../context/SocketContext';
 import { setUser } from '../../slices/userSlice';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import LoginLoading from '../../components/logiinLoading.jsx';
 
 const UserSignup = () => {
     const [email, setEmail] = useState('');
@@ -57,6 +58,7 @@ const UserSignup = () => {
     return (
 
         <div className='p-7 h-screen flex flex-col  bg-gray-100  '>
+            {click && <LoginLoading />}
             <img className=' w-16 mb-10 ' src="images\uber.png" alt="" />
             <form onSubmit={(e) => {
                 submitHandler(e, email, password)
