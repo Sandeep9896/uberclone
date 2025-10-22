@@ -19,12 +19,13 @@ const UserProtectwrapper = ({ children }) => {
       return;
     }
 
-    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/auth`, {
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then((response) => {
         if (response.status === 200) {
           dispatch(setUser(response.data.user));
+          console.log('User authenticated:', response.data);
         }
       })
       .catch((err) => {

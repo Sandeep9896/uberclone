@@ -64,9 +64,11 @@ export const loginUser = async (req, res, next) => {
 }
 
 export const getUserProfile = async (req, res, next) => {
+     const user = req.user;
      return res.status(200).json({
-          user: req.user,
-          message: 'User profile retrieved successfully'
+          user,
+          message: 'User profile retrieved successfully',
+          success: true
      });
 
 }

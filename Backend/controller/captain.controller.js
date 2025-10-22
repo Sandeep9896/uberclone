@@ -1,4 +1,4 @@
-import captainModel from '../models/captain.model.js';
+    import captainModel from '../models/captain.model.js';
 import { validationResult } from 'express-validator';
 import blacklistTokenModel from '../models/blacklistToken.model.js';
 import {createCaptain} from '../services/captain.services.js';

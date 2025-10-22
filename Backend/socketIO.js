@@ -38,6 +38,7 @@ export const initSocket = (httpServer, opts = {}) => {
         socket.on('join', async ({ userType, userId }) => {
             if (!userId || !userType) {
                 console.error('Invalid join payload:', { userType, userId });
+                socket.emit('join-error', { message: 'Invalid join payload' });
                 return;
             }
             if (userType === 'user') {
@@ -49,8 +50,10 @@ export const initSocket = (httpServer, opts = {}) => {
                         { new: true }
                     );
                     console.log('Updated user sockets:', user);
+                    socket.emit('join-success', { userType: 'user', userId, socketId: socket.id });
                 } catch (error) {
                     console.error('Error updating user sockets:', error);
+                    socket.emit('join-error', { message: 'Failed to join', error: error.message });
                 }
             } else if (userType === 'captain') {
                 console.log(`Captain ${userId} joined as ${socket.id}`);
@@ -61,12 +64,15 @@ export const initSocket = (httpServer, opts = {}) => {
                         { new: true }
                     );
 
+                    socket.emit('join-success', { userType: 'captain', userId, socketId: socket.id });
+
+                    // Uncomment if you want to send pending rides
                     // const pendingRides = await Ridemodel.find({ status: 'pending' });
                     // socket.emit('AvailableRides', pendingRides);
 
-
                 } catch (error) {
                     console.error('Error updating captain sockets:', error);
+                    socket.emit('join-error', { message: 'Failed to join', error: error.message });
                 }
             }
         });

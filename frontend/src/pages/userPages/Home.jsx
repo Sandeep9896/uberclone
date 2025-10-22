@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect, } from 'react'
+import React, { useRef, useState, useContext, useEffect, use, } from 'react'
 import FindRide from '../../components/userComponents/FindRide.jsx';
 import { SocketContext } from '../../context/SocketContext.jsx';
 import { useDispatch } from "react-redux";
@@ -14,6 +14,11 @@ const home = () => {
   const { socket, sendMessage } = useContext(SocketContext);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  useEffect(() => {
+    console.log("Home useEffect triggered");
+    console.log("Socket exists:", !!socket);
+    console.log(user)
+  }, [user]);
 
   
 

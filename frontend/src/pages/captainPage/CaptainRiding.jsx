@@ -17,6 +17,14 @@ const CaptainRiding = () => {
         localStorage.setItem('captainRidingStep', step);
     }, [step]);
 
+    // Cleanup: Remove step from localStorage when component unmounts
+    useEffect(() => {
+        return () => {
+            localStorage.removeItem('captainRidingStep');
+            console.log('CaptainRiding unmounted - step removed from localStorage');
+        };
+    }, []);
+
     const nextStep = () => setStep((prev) => prev + 1);
     const prevStep = () => setStep((prev) => prev - 1);
 

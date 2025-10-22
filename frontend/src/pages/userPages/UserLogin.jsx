@@ -44,6 +44,7 @@ const UserLogin = () => {
             );
             if (response.status === 200) {
                 dispatch(setUser(response.data.user)); // set user in redux store
+                console.log('Login successful:', response.data.user);
                 setIsLoggedIn(true); // Set login state to true
                 localStorage.setItem('token', response.data.token); // store token in local storage
                 localStorage.setItem("auth", JSON.stringify({ user: { _id: response.data.user._id }, role: "user" }));
