@@ -28,23 +28,7 @@ export default function UserLayout() {
   const mapClass = mapHeights[location.pathname] || "h-1/3";
 
   useEffect(() => {
-    console.log("UserLayout useEffect triggered");
-    console.log("Socket exists:", !!socket);
-    console.log("Socket connected:", socket?.connected);
-    console.log("User exists:", !!user);
-    console.log("User ID:", user?._id);
-    
-    if (socket && socket.connected && user) {
-      console.log("UserLayout: Joining socket room for user:", user._id);
-      sendMessage('join', { userType: 'user', userId: user._id });
-    } else {
-      console.log("Cannot join - missing requirements:", {
-        hasSocket: !!socket,
-        isConnected: socket?.connected,
-        hasUser: !!user,
-        userId: user?._id
-      });
-    }
+    sendMessage('join', { userType: 'user', userId: user._id });
     
   }, [socket, user]);
 
