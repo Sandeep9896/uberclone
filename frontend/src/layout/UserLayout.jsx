@@ -28,7 +28,7 @@ export default function UserLayout() {
   const mapClass = mapHeights[location.pathname] || "h-1/3";
 
   useEffect(() => {
-    sendMessage('join', { userType: 'user', userId: user._id });
+    sendMessage('join', { userType: 'user', userId: user?._id });
     
   }, [socket, user]);
 
